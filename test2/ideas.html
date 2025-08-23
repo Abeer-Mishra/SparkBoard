@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SparkBoard - Submitted Ideas</title>
+    <link rel="stylesheet" href="global.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+</head>
+<body>
+<!-- Navigation Bar -->
+<nav>
+    <a href="../src/index.html" class="logo">
+        <i class="fa-solid fa-lightbulb"></i> SparkBoard
+    </a>
+    <ul>
+        <li><a href="../src/index.html">Home</a></li>
+        <li><a href="../src/index.html#about">About</a></li>
+        <li><a href="#">Documentation</a></li>
+        <li><a href="ideas.html">Ideas</a></li>
+    </ul>
+</nav>
+
+<!-- Background Shapes -->
+<div class="hero-visual">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+</div>
+
+<!-- Submit Idea Section -->
+<section id="submit-idea" class="section">
+    <div class="idea-form-container">
+        <h2>Have a Startup Idea?</h2>
+        <form class="idea-form" id="ideaForm">
+            <input type="text" id="studentName" placeholder="Your Name" required>
+            <input type="text" id="startupIdea" placeholder="What's your startup idea?" required>
+            <textarea id="problemSolved" rows="4" placeholder="What problem does it solve?" required></textarea>
+            <button type="submit">Submit Your Idea</button>
+        </form>
+    </div>
+    <a href="#ideas" class="scroll-down-arrow">
+        <i class="fa-solid fa-chevron-down"></i>
+    </a>
+</section>
+
+<!-- Ideas Section -->
+<section id="ideas" class="section alt-bg">
+    <h2>Submitted Ideas</h2>
+    <div class="ideas-grid" id="ideasGrid">
+        <!-- Example Idea Cards -->
+        <div class="idea-card">
+            <h3>Eco-Friendly Packaging</h3>
+            <h4>Submitted by: Jane Doe</h4>
+            <p>Reduces plastic waste by creating biodegradable packaging from agricultural byproducts.</p>
+        </div>
+        <div class="idea-card">
+            <h3>AI Language Coach</h3>
+            <h4>Submitted by: John Smith</h4>
+            <p>An AI-powered app that teaches languages with real-time feedback.</p>
+        </div>
+        <div class="idea-card">
+            <h3>Edible Utensils</h3>
+            <h4>Submitted by: Dinesh Tadepalli</h4>
+            <p>Eco-friendly alternatives to plastic cutlery that are edible and biodegradable.</p>
+        </div>
+        <div class="idea-card">
+            <h3>Waste-to-Energy Converter</h3>
+            <h4>Submitted by: Ishita Nair</h4>
+            <p>ETransforms biodegradable household waste into clean energy that can power small appliances, reducing reliance on non-renewable sources.</p>
+        </div>
+        <div class="idea-card">
+            <h3>AI Health Monitor</h3>
+            <h4>Submitted by: Rohan Gupta</h4>
+            <p>A wearable device that continuously tracks health metrics, alerts users about risks, and suggests preventive measures.</p>
+        </div>
+        <div class="idea-card">
+            <h3>Smart Farming Assistant</h3>
+            <h4>Submitted by: Aarav Mehta</h4>
+            <p>Helps farmers monitor soil health, irrigation, and crop growth with AI-powered insights, reducing costs and improving yield.</p>
+        </div>
+        <div class="idea-card">
+            <h3>Plant Buddy Sensor</h3>
+            <h4>Submitted by: Riya Kapoor</h4>
+            <p>A small device that tracks soil moisture, sunlight, and temperature, sending alerts to your phone so plants never die of neglect.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <p>© 2025 SparkBoard. All Rights Reserved.</p>
+</footer>
+
+<!-- Script for handling idea submissions -->
+<script>
+    document.getElementById('ideaForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const studentName = document.getElementById('studentName').value;
+        const startupIdea = document.getElementById('startupIdea').value;
+        const problemSolved = document.getElementById('problemSolved').value;
+
+        if (!studentName.trim() || !startupIdea.trim() || !problemSolved.trim()) {
+            alert('Please fill out all fields!');
+            return;
+        }
+
+        const ideasGrid = document.getElementById('ideasGrid');
+        const newCard = document.createElement('div');
+        newCard.className = 'idea-card';
+        newCard.innerHTML = `
+        <h3>${startupIdea}</h3>
+        <h4>Submitted by: ${studentName}</h4>
+        <p>${problemSolved}</p>
+      `;
+        ideasGrid.insertBefore(newCard, ideasGrid.firstChild);
+
+        document.getElementById('ideaForm').reset();
+    });
+</script>
+</body>
+</html>
