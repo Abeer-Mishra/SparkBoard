@@ -925,7 +925,7 @@
             <div class="section-header fade-in">
                 <span class="subtitle">Community Ideas</span>
                 <h2>Latest Sparks of Genius</h2>
-                <p>Explore the innovative ideas being shared by students from around the world.</p>
+                <p>Explore the innovative ideas being shared by students from around the world. Start sharing yours</p>
             </div>
             <div class="ideas-grid" id="ideasGrid">
                 <!-- Idea cards will be dynamically inserted here -->
@@ -945,6 +945,7 @@
     </section>
 
     <!-- Submit Idea Section -->
+    <!-- Submit Idea Section -->
     <section class="section" id="submit-idea">
         <div class="container">
             <div class="section-header fade-in">
@@ -963,8 +964,26 @@
                         <input type="text" id="startupIdea" class="form-control" placeholder="e.g., Eco-Friendly Packaging" required>
                     </div>
                     <div class="form-group">
+                        <label for="problemStatement">Problem it Solves</label>
+                        <textarea id="problemStatement" class="form-control" placeholder="What problem does your idea solve?" required></textarea>
+                    </div>
+                    <div class="form-group">
                         <label for="problemSolved">Describe your idea</label>
-                        <textarea id="problemSolved" class="form-control" placeholder="Describe the problem you are solving and your unique solution." required></textarea>
+                        <textarea id="problemSolved" class="form-control" placeholder="Describe your unique solution." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="category">Category (Optional)</label>
+                        <select id="category" class="form-control">
+                            <option value="Technology">Technology</option>
+                            <option value="Healthcare">Healthcare</option>
+                            <option value="Education">Education</option>
+                            <option value="Environment">Environment</option>
+                            <option value="Social">Social</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Retail">Retail</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Other">Other</option>
+                        </select>
                     </div>
                     <button type="submit" class="btn btn-primary form-submit-btn">Submit Idea</button>
                 </form>
@@ -1114,132 +1133,111 @@
     const ideaForm = document.getElementById('ideaForm');
     const ideasGrid = document.getElementById('ideasGrid');
 
-    // Sample initial ideas
-    let ideas = [
-        {
-            name: 'Jane Doe',
-            title: 'Eco-Friendly Packaging',
-            description: 'Reduces plastic waste by creating biodegradable packaging from agricultural byproducts.',
-            likes: 25,
-            comments: 7
-        },
-        {
-            name: 'John Smith',
-            title: 'AI Language Coach',
-            description: 'An AI-powered app that teaches languages with real-time feedback and personalized lesson plans.',
-            likes: 42,
-            comments: 12
-        },
-        {
-            name: 'Dinesh Tadepalli',
-            title: 'Edible Utensils',
-            description: 'Eco-friendly alternatives to plastic cutlery that are edible and biodegradable, tackling plastic pollution.',
-            likes: 67,
-            comments: 18
-        },
-        {
-            name: 'Ishita Nair',
-            title: 'Waste-to-Energy Converter',
-            description: 'Transforms biodegradable household waste into clean energy that can power small appliances.',
-            likes: 33,
-            comments: 9
-        },
-        {
-            name: 'Rohan Gupta',
-            title: 'AI Health Monitor',
-            description: 'A wearable device that continuously tracks health metrics, alerts users about risks, and suggests preventive measures.',
-            likes: 51,
-            comments: 15
-        },
-        {
-            name: 'Aarav Mehta',
-            title: 'Smart Farming Assistant',
-            description: 'Helps farmers monitor soil health, irrigation, and crop growth with AI-powered insights, reducing costs and improving yield.',
-            likes: 45,
-            comments: 11
-        }
-    ];
+
+    let ideas = [];
+
 
     function renderIdeas() {
         ideasGrid.innerHTML = '';
         ideas.forEach((idea, index) => {
             const ideaCard = document.createElement('div');
             ideaCard.className = 'idea-card fade-in';
-            ideaCard.innerHTML = `
-                    <div class="idea-card-content">
-                        <h3>${idea.title}</h3>
-                        <p class="author">By: ${idea.name}</p>
-                        <p>${idea.description}</p>
-                    </div>
-                    <div class="idea-card-footer">
-                        <div class="likes" data-index="${index}">
-                            <i data-feather="heart"></i>
-                            <span>${idea.likes}</span>
-                        </div>
-                        <div class="comments">
-                            <i data-feather="message-square"></i>
-                            <span>${idea.comments}</span>
-                        </div>
-                    </div>
-                `;
+            ideaCard.innerHTML = `  <div class="idea-card-content">
+    <h3 class="idea-title">${idea.title}</h3>
+    <p class="author">👤 By <span>${idea.name}</span></p>
+
+    <div class="idea-section">
+      <h4>💡 Problem it Solves</h4>
+      <p>${idea.problem}</p>
+    </div>
+
+    <div class="idea-section">
+      <h4>📝 Description</h4>
+      <p>${idea.description}</p>
+    </div>
+
+    <p class="category">
+      <strong>Category:</strong> <br> <em>${idea.category || 'Unspecified'}</em>
+    </p>
+  </div>
+
+  <div class="idea-card-footer">
+    <button class="likes" data-index="${index}">
+      <i data-feather="heart"></i>
+      <span>${idea.likes}</span>
+    </button>
+    <button class="comments" data-index="${index}">
+      <i data-feather="message-square"></i>
+      <span>${idea.comments}</span>
+    </button>
+  </div>
+`;
             ideasGrid.appendChild(ideaCard);
-            // Make the animation observer aware of the new card
             observer.observe(ideaCard);
         });
         feather.replace();
 
-        // Add event listeners for like buttons
+
         document.querySelectorAll('.likes').forEach(likeBtn => {
             likeBtn.addEventListener('click', handleLike);
         });
     }
+
 
     function handleLike(event) {
         const likeButton = event.currentTarget;
         const index = likeButton.dataset.index;
         const likeCountSpan = likeButton.querySelector('span');
 
-        // Toggle liked state visually
+
         likeButton.classList.toggle('liked');
 
-        // Update likes in the data array
+
         if (likeButton.classList.contains('liked')) {
             ideas[index].likes++;
         } else {
             ideas[index].likes--;
         }
 
-        // Update the displayed count directly in the DOM
+
         likeCountSpan.textContent = ideas[index].likes;
     }
+
 
     ideaForm.addEventListener('submit', function(event) {
         event.preventDefault();
 
         const studentName = document.getElementById('studentName').value;
         const startupIdea = document.getElementById('startupIdea').value;
+        const problemStatement = document.getElementById('problemStatement').value;
         const problemSolved = document.getElementById('problemSolved').value;
+        const category = document.getElementById('category').value;
 
-        if (!studentName.trim() || !startupIdea.trim() || !problemSolved.trim()) {
-            // You can replace this with a more modern notification system
-            alert('Please fill out all fields!');
+        if (!studentName.trim() || !startupIdea.trim() || !problemStatement.trim() || !problemSolved.trim()) {
+            alert('Please fill out all required fields!');
             return;
         }
 
         const newIdea = {
             name: studentName,
             title: startupIdea,
+            problem: problemStatement,
             description: problemSolved,
+            category: category,
             likes: 0,
             comments: 0
         };
 
-        ideas.unshift(newIdea); // Add to the beginning of the array
+        // 👉 ADD THE NEW IDEA TO THE LIST
+        ideas.unshift(newIdea);
+
+        // 👉 RE-RENDER THE IDEA CARDS
         renderIdeas();
 
+        // 👉 RESET THE FORM
         ideaForm.reset();
 
-        // Optional: Scroll to the ideas section to show the new card
+        // 👉 OPTIONAL: SCROLL TO IDEAS SECTION TO SHOW THE NEW CARD
         document.getElementById('ideas').scrollIntoView({ behavior: 'smooth' });
     });
 
