@@ -470,6 +470,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 30px;
+            align-items: start; /* This is the fix */
         }
 
         .idea-card {
@@ -530,6 +531,8 @@
             align-items: center;
             gap: 8px;
             cursor: pointer;
+            background: none;
+            border: none;
         }
 
         .idea-card-footer .likes svg, .idea-card-footer .comments svg {
@@ -538,13 +541,77 @@
 
         .idea-card-footer .likes:hover svg {
             color: #e74c3c;
-            fill: #e74c3c;
         }
 
         .idea-card-footer .likes.liked svg {
-            color: #e74c3c;
             fill: #e74c3c;
+            color: #e74c3c;
         }
+        .idea-card-footer .comments:hover svg {
+            color: #1E90FF;
+        }
+
+        /* --- Comment Section Styles --- */
+        .comments-section {
+            background-color: #f8f9fa;
+            padding: 0 30px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+        }
+
+        .comments-section.visible {
+            max-height: 500px; /* Adjust as needed */
+            padding: 20px 30px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .comments-list {
+            margin-bottom: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .comment-item {
+            font-size: 14px;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .comment-item:last-child {
+            border-bottom: none;
+        }
+
+        .comment-form {
+            display: flex;
+            gap: 10px;
+        }
+
+        .comment-form input {
+            flex-grow: 1;
+            border: 1px solid var(--border-color);
+            padding: 8px 12px;
+            border-radius: 50px;
+            font-size: 14px;
+        }
+        .comment-form input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .comment-form button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.3s ease;
+        }
+        .comment-form button:hover {
+            background: var(--secondary-color);
+        }
+
 
         /* ------------------- */
         /* --- CTA Section --- */
@@ -815,13 +882,6 @@
             transform: translateY(0);
         }
 
-        /* ------------------- */
-        /* --- Utility Classes --- */
-        /* ------------------- */
-        .d-none {
-            display: none;
-        }
-
     </style>
 </head>
 <body>
@@ -864,7 +924,7 @@
                     </div>
                 </div>
                 <div class="hero-image fade-in">
-                    <img src="https://img.freepik.com/free-vector/innovation-idea-bub-gears-background_1017-20101.jpg" alt="Innovation illustration">
+                    <img src="https://img.freepik.com/free-vector/innovation-idea-bub-gears-background_1017-20101.jpg" alt="Innovation illustration" onerror="this.onerror=null;this.src='https://placehold.co/600x400/eeeeee/cccccc?text=Image';">
                 </div>
             </div>
         </div>
@@ -903,7 +963,7 @@
         <div class="container">
             <div class="about-content">
                 <div class="about-image fade-in">
-                    <img src="https://img.freepik.com/premium-vector/teacher-leads-students-collaborative-learning-fostering-growth-engagement_1305385-80985.jpg" alt="Students collaborating">
+                    <img src="https://img.freepik.com/premium-vector/teacher-leads-students-collaborative-learning-fostering-growth-engagement_1305385-80985.jpg" alt="Students collaborating" onerror="this.onerror=null;this.src='https://placehold.co/600x400/eeeeee/cccccc?text=Image';">
                 </div>
                 <div class="about-text fade-in">
                     <h2>Igniting the Entrepreneurial Spirit in Students</h2>
@@ -945,7 +1005,6 @@
     </section>
 
     <!-- Submit Idea Section -->
-    <!-- Submit Idea Section -->
     <section class="section" id="submit-idea">
         <div class="container">
             <div class="section-header fade-in">
@@ -972,7 +1031,7 @@
                         <textarea id="problemSolved" class="form-control" placeholder="Describe your unique solution." required></textarea>
                     </div>
                     <div class="form-group">
-                        <label for="category">Category (Optional)</label>
+                        <label for="category">Category</label>
                         <select id="category" class="form-control">
                             <option value="Technology">Technology</option>
                             <option value="Healthcare">Healthcare</option>
@@ -982,6 +1041,11 @@
                             <option value="Finance">Finance</option>
                             <option value="Retail">Retail</option>
                             <option value="Entertainment">Entertainment</option>
+                            <option value="Travel">Travel</option>
+                            <option value="Science">Science</option>
+                            <option value="Agriculture">Agriculture</option>
+                            <option value="Military & Defense">Military & Defense</option>
+                            <option value="Automotive">Automotive</option>
                             <option value="Other">Other</option>
                         </select>
                     </div>
@@ -1068,7 +1132,6 @@
 
     mobileNavToggle.addEventListener('click', () => {
         navLinks.classList.toggle('active');
-        // Change icon to 'x' when menu is open
         const icon = mobileNavToggle.querySelector('i');
         if (navLinks.classList.contains('active')) {
             mobileNavToggle.innerHTML = '<i data-feather="x"></i>';
@@ -1078,7 +1141,6 @@
         feather.replace();
     });
 
-    // Close mobile nav when a link is clicked
     navLinkItems.forEach(link => {
         link.addEventListener('click', () => {
             if (navLinks.classList.contains('active')) {
@@ -1101,11 +1163,13 @@
             const sectionHeight = current.offsetHeight;
             const sectionTop = current.offsetTop - 100;
             let sectionId = current.getAttribute('id');
-
-            if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
-                document.querySelector('.nav-link[href*=' + sectionId + ']').classList.add('active');
-            } else {
-                document.querySelector('.nav-link[href*=' + sectionId + ']').classList.remove('active');
+            const navLink = document.querySelector('.nav-link[href*=' + sectionId + ']');
+            if (navLink) {
+                if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
+                    navLink.classList.add('active');
+                } else {
+                    navLink.classList.remove('active');
+                }
             }
         });
     }
@@ -1133,116 +1197,189 @@
     const ideaForm = document.getElementById('ideaForm');
     const ideasGrid = document.getElementById('ideasGrid');
 
+    // --- Sample Data ---
+    let ideas = [
+        {
+            id: `idea-${Date.now()}-1`, // Unique ID
+            name: "Alex Johnson",
+            title: "Campus Compost Collective",
+            problem: "Food waste from university dining halls is a major environmental issue.",
+            description: "A student-run program that collects food scraps from dining halls and local cafes to turn into compost for campus gardens.",
+            category: "Environment",
+            likes: 15,
+            commentsList: ["This is a fantastic initiative!", "How can I get involved?"],
+            isLiked: false
+        },
+        {
+            id: `idea-${Date.now()}-2`, // Unique ID
+            name: "Maria Garcia",
+            title: "SkillSwap",
+            problem: "Students have valuable skills but often lack a platform to trade them without money.",
+            description: "A mobile app where students can offer services (like tutoring in Python) in exchange for other services (like guitar lessons).",
+            category: "Social",
+            likes: 28,
+            commentsList: ["I've been wanting something like this forever.", "Is there a web version planned?", "Great for building a portfolio."],
+            isLiked: true
+        }
+    ];
 
-    let ideas = [];
+    // --- Create a single Idea Card Element ---
+    function createIdeaCard(idea) {
+        const ideaCard = document.createElement('div');
+        ideaCard.className = 'idea-card fade-in';
+        ideaCard.setAttribute('data-id', idea.id);
 
+        const commentsHtml = idea.commentsList.map(comment =>
+            `<div class="comment-item">${comment}</div>`
+        ).join('');
 
-    function renderIdeas() {
-        ideasGrid.innerHTML = '';
-        ideas.forEach((idea, index) => {
-            const ideaCard = document.createElement('div');
-            ideaCard.className = 'idea-card fade-in';
-            ideaCard.innerHTML = `  <div class="idea-card-content">
-    <h3 class="idea-title">${idea.title}</h3>
-    <p class="author">👤 By <span>${idea.name}</span></p>
+        ideaCard.innerHTML = `
+            <div class="idea-card-content">
+                <h3 class="idea-title">${idea.title}</h3>
+                <p class="author">👤 By <span>${idea.name}</span></p>
+                <div class="idea-section">
+                    <h4>💡 Problem it Solves</h4>
+                    <p>${idea.problem}</p>
+                </div>
+                <div class="idea-section">
+                    <h4>📝 Description</h4>
+                    <p>${idea.description}</p>
+                </div>
+                <p class="category">
+                    <strong>Category:</strong> <br> <em>${idea.category || 'Unspecified'}</em>
+                </p>
+            </div>
+            <div class="idea-card-footer">
+                <button class="likes ${idea.isLiked ? 'liked' : ''}">
+                    <i data-feather="heart"></i>
+                    <span>${idea.likes}</span>
+                </button>
+                <button class="comments">
+                    <i data-feather="message-square"></i>
+                    <span>${idea.commentsList.length}</span>
+                </button>
+            </div>
+            <div class="comments-section">
+                <div class="comments-list">
+                    ${commentsHtml || '<p class="no-comments" style="font-size: 13px; color: #888;">No comments yet. Be the first!</p>'}
+                </div>
+                <form class="comment-form">
+                    <input type="text" placeholder="Add a comment..." required>
+                    <button type="submit">Post</button>
+                </form>
+            </div>
+        `;
+        return ideaCard;
+    }
 
-    <div class="idea-section">
-      <h4>💡 Problem it Solves</h4>
-      <p>${idea.problem}</p>
-    </div>
-
-    <div class="idea-section">
-      <h4>📝 Description</h4>
-      <p>${idea.description}</p>
-    </div>
-
-    <p class="category">
-      <strong>Category:</strong> <br> <em>${idea.category || 'Unspecified'}</em>
-    </p>
-  </div>
-
-  <div class="idea-card-footer">
-    <button class="likes" data-index="${index}">
-      <i data-feather="heart"></i>
-      <span>${idea.likes}</span>
-    </button>
-    <button class="comments" data-index="${index}">
-      <i data-feather="message-square"></i>
-      <span>${idea.comments}</span>
-    </button>
-  </div>
-`;
-            ideasGrid.appendChild(ideaCard);
-            observer.observe(ideaCard);
+    // --- Initial Render Function ---
+    function renderAllIdeas() {
+        ideasGrid.innerHTML = ''; // Clear the grid before re-rendering
+        ideas.forEach(idea => {
+            const ideaCardElement = createIdeaCard(idea);
+            ideasGrid.appendChild(ideaCardElement);
+            observer.observe(ideaCardElement);
         });
         feather.replace();
-
-
-        document.querySelectorAll('.likes').forEach(likeBtn => {
-            likeBtn.addEventListener('click', handleLike);
-        });
     }
 
+    // --- Event Delegation for the entire grid ---
+    ideasGrid.addEventListener('click', (event) => {
+        const card = event.target.closest('.idea-card');
+        if (!card) return;
 
-    function handleLike(event) {
-        const likeButton = event.currentTarget;
-        const index = likeButton.dataset.index;
-        const likeCountSpan = likeButton.querySelector('span');
+        const cardId = card.dataset.id;
+        const idea = ideas.find(i => i.id === cardId);
+        if (!idea) return;
 
+        // Handle Like Button Click
+        if (event.target.closest('.likes')) {
+            const likeButton = event.target.closest('.likes');
+            idea.isLiked = !idea.isLiked;
+            idea.likes += idea.isLiked ? 1 : -1;
 
-        likeButton.classList.toggle('liked');
-
-
-        if (likeButton.classList.contains('liked')) {
-            ideas[index].likes++;
-        } else {
-            ideas[index].likes--;
+            likeButton.classList.toggle('liked');
+            likeButton.querySelector('span').textContent = idea.likes;
         }
 
+        // Handle Comment Button Click
+        if (event.target.closest('.comments')) {
+            const commentsSection = card.querySelector('.comments-section');
+            commentsSection.classList.toggle('visible');
+        }
+    });
 
-        likeCountSpan.textContent = ideas[index].likes;
-    }
+    ideasGrid.addEventListener('submit', (event) => {
+        if (event.target.classList.contains('comment-form')) {
+            event.preventDefault();
+            const card = event.target.closest('.idea-card');
+            if (!card) return;
 
+            const cardId = card.dataset.id;
+            const idea = ideas.find(i => i.id === cardId);
+            if (!idea) return;
 
+            const form = event.target;
+            const input = form.querySelector('input');
+            const commentText = input.value.trim();
+
+            if (commentText) {
+                // Update data
+                idea.commentsList.push(commentText);
+
+                // Update UI
+                const commentsListDiv = card.querySelector('.comments-list');
+                const noCommentsMsg = commentsListDiv.querySelector('.no-comments');
+                if (noCommentsMsg) {
+                    noCommentsMsg.remove();
+                }
+
+                const newComment = document.createElement('div');
+                newComment.className = 'comment-item';
+                newComment.textContent = commentText;
+                commentsListDiv.appendChild(newComment);
+
+                card.querySelector('.comments span').textContent = idea.commentsList.length;
+
+                input.value = '';
+            }
+        }
+    });
+
+    // --- Handle New Idea Submission ---
     ideaForm.addEventListener('submit', function(event) {
         event.preventDefault();
 
-        const studentName = document.getElementById('studentName').value;
-        const startupIdea = document.getElementById('startupIdea').value;
-        const problemStatement = document.getElementById('problemStatement').value;
-        const problemSolved = document.getElementById('problemSolved').value;
-        const category = document.getElementById('category').value;
+        const newIdea = {
+            id: `idea-${Date.now()}`,
+            name: document.getElementById('studentName').value,
+            title: document.getElementById('startupIdea').value,
+            problem: document.getElementById('problemStatement').value,
+            description: document.getElementById('problemSolved').value,
+            category: document.getElementById('category').value,
+            likes: 0,
+            commentsList: [],
+            isLiked: false
+        };
 
-        if (!studentName.trim() || !startupIdea.trim() || !problemStatement.trim() || !problemSolved.trim()) {
-            alert('Please fill out all required fields!');
+        if (!newIdea.name.trim() || !newIdea.title.trim() || !newIdea.problem.trim() || !newIdea.description.trim()) {
+            // A non-blocking message would be better in a real app
+            console.error('Please fill out all required fields!');
             return;
         }
 
-        const newIdea = {
-            name: studentName,
-            title: startupIdea,
-            problem: problemStatement,
-            description: problemSolved,
-            category: category,
-            likes: 0,
-            comments: 0
-        };
-
-        // 👉 ADD THE NEW IDEA TO THE LIST
         ideas.unshift(newIdea);
+        const newCardElement = createIdeaCard(newIdea);
+        ideasGrid.prepend(newCardElement);
+        feather.replace();
+        observer.observe(newCardElement);
 
-        // 👉 RE-RENDER THE IDEA CARDS
-        renderIdeas();
-
-        // 👉 RESET THE FORM
         ideaForm.reset();
-
-        // 👉 OPTIONAL: SCROLL TO IDEAS SECTION TO SHOW THE NEW CARD
-        document.getElementById('ideas').scrollIntoView({ behavior: 'smooth' });
+        newCardElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
 
-    // Initial render of ideas
-    window.onload = renderIdeas;
+    // --- Initial Render on Page Load ---
+    window.onload = renderAllIdeas;
 
 </script>
 </body>
