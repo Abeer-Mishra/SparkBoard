@@ -20,7 +20,7 @@
         /* ------------------- */
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
-        body { font-family: 'Inter', sans-serif; line-height: 1.6; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+        body { font-family: 'Inter', sans-serif; line-height: 1.6; overflow-x: hidden; -webkit-font-smoothing: antialiased; transition: background-color 0.4s ease, color 0.4s ease; }
         img, picture, video, canvas, svg { display: block; max-width: 100%; }
         input, button, textarea, select { font: inherit; }
         h1, h2, h3, h4, h5, h6 { text-wrap: balance; }
@@ -31,18 +31,6 @@
         /* --- Root Variables & Themes --- */
         /* ------------------- */
         :root {
-            /* Theme: Cyber Teal & Slate */
-            --accent-color: #00f2ea;
-            --accent-glow: rgba(0, 242, 234, 0.4);
-            --secondary-accent: #ff00c1;
-
-            --text-primary: #e0e6f1;
-            --text-secondary: #94a3b8;
-            --bg-primary: #0f172a; /* Slate 900 */
-            --bg-secondary: #1e293b; /* Slate 800 */
-            --border-color: #334155; /* Slate 700 */
-            --glass-bg: rgba(30, 41, 59, 0.5);
-
             --shadow-sm: 0 1px 2px rgba(0,0,0,0.1);
             --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
             --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
@@ -50,11 +38,56 @@
             --container-width: 1200px;
             --border-radius: 12px;
             --transition-speed: 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+            /* Light Theme Variables */
+            --accent-color-light: #007BFF;
+            --accent-glow-light: rgba(0, 123, 255, 0.3);
+            --secondary-accent-light: #6F42C1;
+            --text-primary-light: #212529;
+            --text-secondary-light: #6c757d;
+            --bg-primary-light: #f8f9fa;
+            --bg-secondary-light: #ffffff;
+            --border-color-light: #dee2e6;
+            --glass-bg-light: rgba(255, 255, 255, 0.7);
+
+            /* Dark Theme Variables */
+            --accent-color-dark: #00f2ea;
+            --accent-glow-dark: rgba(0, 242, 234, 0.4);
+            --secondary-accent-dark: #ff00c1;
+            --text-primary-dark: #e0e6f1;
+            --text-secondary-dark: #94a3b8;
+            --bg-primary-dark: #0f172a;
+            --bg-secondary-dark: #1e293b;
+            --border-color-dark: #334155;
+            --glass-bg-dark: rgba(30, 41, 59, 0.5);
         }
 
         body {
+            /* Default to dark theme */
+            --accent-color: var(--accent-color-dark);
+            --accent-glow: var(--accent-glow-dark);
+            --secondary-accent: var(--secondary-accent-dark);
+            --text-primary: var(--text-primary-dark);
+            --text-secondary: var(--text-secondary-dark);
+            --bg-primary: var(--bg-primary-dark);
+            --bg-secondary: var(--bg-secondary-dark);
+            --border-color: var(--border-color-dark);
+            --glass-bg: var(--glass-bg-dark);
+
             background-color: var(--bg-primary);
             color: var(--text-primary);
+        }
+
+        body.light-theme {
+            --accent-color: var(--accent-color-light);
+            --accent-glow: var(--accent-glow-light);
+            --secondary-accent: var(--secondary-accent-light);
+            --text-primary: var(--text-primary-light);
+            --text-secondary: var(--text-secondary-light);
+            --bg-primary: var(--bg-primary-light);
+            --bg-secondary: var(--bg-secondary-light);
+            --border-color: var(--border-color-light);
+            --glass-bg: var(--glass-bg-light);
         }
 
         /* ------------------- */
@@ -80,12 +113,10 @@
             radial-gradient(circle at top right, rgba(255, 0, 193, 0.1) 0%, rgba(15, 23, 42, 0) 50%);
             animation: aurora-breathe 20s infinite ease-in-out;
             opacity: 0.5;
+            transition: opacity 0.5s ease;
         }
 
-        @keyframes aurora-breathe {
-            0%, 100% { transform: translate(-50%, -50%) scale(1); }
-            50% { transform: translate(-50%, -50%) scale(1.2) rotate(10deg); }
-        }
+        body.light-theme .aurora-background { opacity: 0; }
 
         /* ------------------- */
         /* --- General Styles --- */
@@ -123,8 +154,11 @@
         }
         .btn-primary {
             background: var(--accent-color);
-            color: #000;
+            color: var(--bg-secondary);
             box-shadow: 0 0 20px var(--accent-glow);
+        }
+        body.light-theme .btn-primary {
+            color: white;
         }
         .btn-primary:hover {
             transform: translateY(-3px) scale(1.02);
@@ -139,6 +173,7 @@
             background-color: var(--border-color);
             color: white;
         }
+        body.light-theme .btn-secondary:hover { color: var(--text-primary); }
 
         /* ------------------- */
         /* --- Floating Nav --- */
@@ -173,6 +208,19 @@
             width: 5px; height: 5px;
             border-radius: 50%;
             background: var(--accent-color);
+        }
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 20px;
+            padding: 5px;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+        .theme-toggle:hover {
+            color: var(--accent-color);
+            transform: scale(1.1) rotate(15deg);
         }
 
         /* ------------------- */
@@ -221,10 +269,11 @@
         .filter-btn:hover { background: var(--border-color); color: var(--text-primary); }
         .filter-btn.active {
             background: var(--accent-color);
-            color: var(--bg-primary);
+            color: var(--bg-secondary);
             border-color: var(--accent-color);
             font-weight: 600;
         }
+        body.light-theme .filter-btn.active { color: white; }
 
         .sort-group select {
             background: var(--bg-secondary);
@@ -252,7 +301,7 @@
         .idea-card:hover {
             transform: translateY(-8px);
             border-color: var(--accent-color);
-            box-shadow: 0 0 20px rgba(0, 242, 234, 0.1);
+            box-shadow: 0 0 20px var(--accent-glow);
         }
         .idea-card-header {
             display: flex; justify-content: space-between; align-items: flex-start;
@@ -261,13 +310,15 @@
         .idea-card-header h3 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
         .idea-card-header .author { color: var(--text-secondary); font-size: 14px; }
         .idea-card-category {
-            background-color: rgba(0, 242, 234, 0.1);
-            color: var(--accent-color);
+            background-color: var(--accent-color);
+            color: var(--bg-secondary);
             padding: 4px 12px;
             border-radius: 50px;
             font-size: 12px;
             font-weight: 600;
         }
+        body.light-theme .idea-card-category { color: white; }
+
         .idea-card-body p { color: var(--text-secondary); margin-bottom: 16px; font-size: 15px; }
         .idea-card-footer {
             margin-top: auto; padding-top: 16px;
@@ -325,6 +376,8 @@
             opacity: 0; visibility: hidden;
             transition: opacity 0.3s ease, visibility 0.3s ease;
         }
+        body.light-theme .modal-overlay { background: rgba(255, 255, 255, 0.7); }
+
         .modal-overlay.visible { opacity: 1; visibility: visible; }
         .modal-content {
             background: var(--bg-secondary);
@@ -362,10 +415,11 @@
         }
         .comment-form input:focus { outline: none; border-color: var(--accent-color); }
         .comment-form button {
-            background: var(--accent-color); color: var(--bg-primary);
+            background: var(--accent-color); color: var(--bg-secondary);
             border: none; padding: 10px 20px; border-radius: 8px;
             cursor: pointer; font-weight: 600;
         }
+        body.light-theme .comment-form button { color: white; }
 
         /* ------------------- */
         /* --- Submit Form Section --- */
@@ -422,7 +476,7 @@
             left: 50%;
             transform: translateX(-50%) translateY(100px);
             background: var(--accent-color);
-            color: var(--bg-primary);
+            color: var(--bg-secondary);
             padding: 16px 24px;
             border-radius: 8px;
             font-weight: 600;
@@ -435,6 +489,7 @@
             transform: translateX(-50%) translateY(0);
             opacity: 1;
         }
+        body.light-theme .toast { color: white; }
 
         /* ------------------- */
         /* --- Footer --- */
@@ -477,7 +532,9 @@
             <a href="#about" class="nav-link">About</a>
             <a href="#submit-idea" class="nav-link">Submit</a>
         </div>
-        <a href="#submit-idea" class="btn btn-primary" style="padding: 8px 16px; font-size: 14px;">Share Idea</a>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+            <i class="fas fa-moon"></i>
+        </button>
     </nav>
 </header>
 
@@ -490,36 +547,6 @@
                 <div class="hero-buttons">
                     <a href="#submit-idea" class="btn btn-primary">Submit Your Idea <i class="fas fa-arrow-right"></i></a>
                     <a href="#ideas" class="btn btn-secondary">Explore Concepts</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="section" id="about">
-        <div class="container">
-            <div class="about-grid">
-                <div class="about-text">
-                    <h2>From a Spark to a Roaring Flame</h2>
-                    <p>SparkBoard was founded on a simple belief: every student holds the potential for world-changing ideas. We provide the ecosystem to nurture those initial sparks of genius, connecting you with the community, feedback, and momentum needed to grow.</p>
-                    <ul class="about-list">
-                        <li><i class="fas fa-check-circle"></i> Foster a vibrant community of innovators.</li>
-                        <li><i class="fas fa-check-circle"></i> Connect students across diverse disciplines.</li>
-                        <li><i class="fas fa-check-circle"></i> Provide a platform for constructive feedback and validation.</li>
-                    </ul>
-                </div>
-                <div class="about-cta">
-                    <h3>Join the Movement</h3>
-                    <div class="stats-grid">
-                        <div class="stat-item">
-                            <div class="stat-number">1,200+</div>
-                            <div class="stat-label">Innovators</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number">450+</div>
-                            <div class="stat-label">Ideas Launched</div>
-                        </div>
-                    </div>
-                    <a href="#submit-idea" class="btn btn-primary">You're Next <i class="fas fa-arrow-right"></i></a>
                 </div>
             </div>
         </div>
@@ -551,6 +578,36 @@
             </div>
 
             <div class="ideas-grid" id="ideasGrid">
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="about">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-text">
+                    <h2>From a Spark to a Roaring Flame</h2>
+                    <p>SparkBoard was founded on a simple belief: every student holds the potential for world-changing ideas. We provide the ecosystem to nurture those initial sparks of genius, connecting you with the community, feedback, and momentum needed to grow.</p>
+                    <ul class="about-list">
+                        <li><i class="fas fa-check-circle"></i> Foster a vibrant community of innovators.</li>
+                        <li><i class="fas fa-check-circle"></i> Connect students across diverse disciplines.</li>
+                        <li><i class="fas fa-check-circle"></i> Provide a platform for constructive feedback and validation.</li>
+                    </ul>
+                </div>
+                <div class="about-cta">
+                    <h3>Join the Movement</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-number">1,200+</div>
+                            <div class="stat-label">Innovators</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">450+</div>
+                            <div class="stat-label">Ideas Launched</div>
+                        </div>
+                    </div>
+                    <a href="#submit-idea" class="btn btn-primary">You're Next <i class="fas fa-arrow-right"></i></a>
+                </div>
             </div>
         </div>
     </section>
@@ -659,6 +716,7 @@
             ],
 
             elements: {
+                themeToggle: document.getElementById('themeToggle'),
                 ideaForm: document.getElementById('ideaForm'),
                 ideasGrid: document.getElementById('ideasGrid'),
                 sections: document.querySelectorAll('section[id]'),
@@ -679,6 +737,7 @@
             },
 
             init() {
+                this.initTheme();
                 this.init3DBackground();
                 this.initNavHighlighter();
                 this.initGSAPAnimations();
@@ -687,6 +746,23 @@
             },
 
             // --- Core Methods ---
+            initTheme() {
+                const isLightMode = localStorage.getItem('lightMode') === 'true';
+                if (isLightMode) {
+                    document.body.classList.add('light-theme');
+                    this.elements.themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+                } else {
+                    this.elements.themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+                }
+
+                this.elements.themeToggle.addEventListener('click', () => {
+                    document.body.classList.toggle('light-theme');
+                    const isNowLight = document.body.classList.contains('light-theme');
+                    localStorage.setItem('lightMode', isNowLight);
+                    this.elements.themeToggle.innerHTML = isNowLight ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+                });
+            },
+
             init3DBackground() {
                 const scene = new THREE.Scene();
                 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
