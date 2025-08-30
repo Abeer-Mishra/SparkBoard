@@ -118,6 +118,11 @@
 
         body.light-theme .aurora-background { opacity: 0; }
 
+        @keyframes aurora-breathe {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+        }
+
         /* ------------------- */
         /* --- General Styles --- */
         /* ------------------- */
@@ -182,7 +187,7 @@
             position: fixed;
             top: 20px; left: 50%;
             transform: translateX(-50%);
-            width: 95%; max-width: 700px;
+            width: 95%; max-width: 800px;
             z-index: 1000;
         }
         .nav-content {
@@ -209,6 +214,7 @@
             border-radius: 50%;
             background: var(--accent-color);
         }
+        .nav-actions { display: flex; align-items: center; gap: 15px; }
         .theme-toggle {
             background: none;
             border: none;
@@ -222,6 +228,7 @@
             color: var(--accent-color);
             transform: scale(1.1) rotate(15deg);
         }
+        #loginBtn { font-size: 14px; padding: 8px 20px; }
 
         /* ------------------- */
         /* --- Hero Section --- */
@@ -336,6 +343,37 @@
         .card-action.liked { color: var(--secondary-accent); }
 
         /* ------------------- */
+        /* --- How It Works Section --- */
+        /* ------------------- */
+        #how-it-works {
+            background-color: transparent;
+        }
+        .how-it-works-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+            text-align: center;
+        }
+        .how-it-works-step .icon {
+            font-size: 48px;
+            color: var(--accent-color);
+            margin-bottom: 24px;
+            display: inline-block;
+            background: linear-gradient(45deg, var(--accent-color), var(--secondary-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .how-it-works-step h3 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .how-it-works-step p {
+            color: var(--text-secondary);
+        }
+
+        /* ------------------- */
         /* --- About Section --- */
         /* ------------------- */
         .about-grid {
@@ -365,7 +403,24 @@
         .stat-item .stat-label { font-size: 14px; color: var(--text-secondary); }
         .about-cta .btn { width: 100%; justify-content: center; }
 
-        /* --- Comment Modal --- */
+        /* ------------------- */
+        /* --- CTA Section --- */
+        /* ------------------- */
+        .cta-section { padding: 80px 0; background: linear-gradient(45deg, var(--accent-color), var(--secondary-accent)); text-align: center; }
+        .cta-section h2 { color: white; font-size: 36px; font-weight: 700; margin-bottom: 30px; }
+        .cta-section .btn {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            padding: 16px 40px;
+            font-size: 18px;
+        }
+        .cta-section .btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            background: white;
+            color: var(--accent-color-light);
+        }
+
+        /* --- Modals (General) --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0;
             width: 100%; height: 100%;
@@ -398,6 +453,8 @@
             font-size: 24px;
             cursor: pointer;
         }
+
+        /* --- Comment Modal --- */
         .modal-idea-title { font-size: 24px; margin-bottom: 24px; }
         .comments-list { max-height: 250px; overflow-y: auto; margin-bottom: 24px; }
         .comment-item {
@@ -421,10 +478,37 @@
         }
         body.light-theme .comment-form button { color: white; }
 
+        /* --- Auth (Login/Sign Up) Modal --- */
+        #authModal .modal-content { max-width: 450px; }
+        .auth-tabs { display: flex; border-bottom: 1px solid var(--border-color); margin-bottom: 24px; }
+        .auth-tab {
+            flex: 1; text-align: center;
+            padding: 12px; font-weight: 600;
+            cursor: pointer; color: var(--text-secondary);
+            border-bottom: 3px solid transparent;
+            transition: var(--transition-speed);
+        }
+        .auth-tab.active { color: var(--accent-color); border-bottom-color: var(--accent-color); }
+        .auth-form { display: none; }
+        .auth-form.active { display: block; }
+        .auth-form .form-group { margin-bottom: 20px; }
+        .auth-form .form-control {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+        }
+        .auth-form .form-control:focus { outline: none; border-color: var(--accent-color); }
+        .auth-form .btn { width: 100%; justify-content: center; }
+
         /* ------------------- */
         /* --- Submit Form Section --- */
         /* ------------------- */
-        #submit-idea { background-color: var(--bg-secondary); }
+        #submit-idea {
+            background-color: transparent;
+        }
         .idea-form-container {
             max-width: 900px; margin: 0 auto;
             background: var(--bg-primary);
@@ -467,28 +551,6 @@
             justify-content: center;
         }
 
-        /* ------------------- */
-        /* --- Toast Notification --- */
-        /* ------------------- */
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: var(--accent-color);
-            color: var(--bg-secondary);
-            padding: 16px 24px;
-            border-radius: 8px;
-            font-weight: 600;
-            box-shadow: var(--shadow-lg);
-            z-index: 3000;
-            opacity: 0;
-            transition: transform 0.5s ease, opacity 0.5s ease;
-        }
-        .toast.show {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
-        }
         body.light-theme .toast { color: white; }
 
         /* ------------------- */
@@ -529,12 +591,15 @@
         <div class="nav-links" id="nav-links">
             <a href="#hero" class="nav-link active">Home</a>
             <a href="#ideas" class="nav-link">Ideas</a>
+            <a href="#how-it-works" class="nav-link">How It Works</a>
             <a href="#about" class="nav-link">About</a>
-            <a href="#submit-idea" class="nav-link">Submit</a>
         </div>
-        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
-            <i class="fas fa-moon"></i>
-        </button>
+        <div class="nav-actions">
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                <i class="fas fa-moon"></i>
+            </button>
+            <button class="btn btn-secondary" id="loginBtn">Login / Sign Up</button>
+        </div>
     </nav>
 </header>
 
@@ -547,6 +612,63 @@
                 <div class="hero-buttons">
                     <a href="#submit-idea" class="btn btn-primary">Submit Your Idea <i class="fas fa-arrow-right"></i></a>
                     <a href="#ideas" class="btn btn-secondary">Explore Concepts</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <span class="subtitle">Process</span>
+                <h2>How It Works</h2>
+                <p>Getting your idea off the ground is as easy as one, two, three.</p>
+            </div>
+            <div class="how-it-works-grid">
+                <div class="how-it-works-step">
+                    <div class="icon"><i class="fas fa-lightbulb"></i></div>
+                    <h3>1. Submit Your Spark</h3>
+                    <p>Use our simple form to articulate the problem you're solving and your unique solution. Don't worry about perfection, just get it out there!</p>
+                </div>
+                <div class="how-it-works-step">
+                    <div class="icon"><i class="fas fa-comments"></i></div>
+                    <h3>2. Gather Feedback</h3>
+                    <p>Your idea is shared with our community of student innovators. Receive constructive comments, likes, and validation for your concept.</p>
+                </div>
+                <div class="how-it-works-step">
+                    <div class="icon"><i class="fas fa-users"></i></div>
+                    <h3>3. Find Collaborators</h3>
+                    <p>Connect with other students who are passionate about your idea. Build a team with diverse skills to bring your vision to life.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="about">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-text">
+                    <h2>From a Spark to a Roaring Flame</h2>
+                    <p>SparkBoard was founded on a simple belief: every student holds the potential for world-changing ideas. We provide the ecosystem to nurture those initial sparks of genius, connecting you with the community, feedback, and momentum needed to grow.</p>
+                    <ul class="about-list">
+                        <li><i class="fas fa-check-circle"></i> Foster a vibrant community of innovators.</li>
+                        <li><i class="fas fa-check-circle"></i> Connect students across diverse disciplines.</li>
+                        <li><i class="fas fa-check-circle"></i> Provide a platform for constructive feedback and validation.</li>
+                    </ul>
+                </div>
+                <div class="about-cta">
+                    <h3>Join the Movement</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-number">1,200+</div>
+                            <div class="stat-label">Innovators</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">450+</div>
+                            <div class="stat-label">Ideas Launched</div>
+                        </div>
+                    </div>
+                    <a href="#submit-idea" class="btn btn-primary">You're Next <i class="fas fa-arrow-right"></i></a>
                 </div>
             </div>
         </div>
@@ -582,35 +704,7 @@
         </div>
     </section>
 
-    <section class="section" id="about">
-        <div class="container">
-            <div class="about-grid">
-                <div class="about-text">
-                    <h2>From a Spark to a Roaring Flame</h2>
-                    <p>SparkBoard was founded on a simple belief: every student holds the potential for world-changing ideas. We provide the ecosystem to nurture those initial sparks of genius, connecting you with the community, feedback, and momentum needed to grow.</p>
-                    <ul class="about-list">
-                        <li><i class="fas fa-check-circle"></i> Foster a vibrant community of innovators.</li>
-                        <li><i class="fas fa-check-circle"></i> Connect students across diverse disciplines.</li>
-                        <li><i class="fas fa-check-circle"></i> Provide a platform for constructive feedback and validation.</li>
-                    </ul>
-                </div>
-                <div class="about-cta">
-                    <h3>Join the Movement</h3>
-                    <div class="stats-grid">
-                        <div class="stat-item">
-                            <div class="stat-number">1,200+</div>
-                            <div class="stat-label">Innovators</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number">450+</div>
-                            <div class="stat-label">Ideas Launched</div>
-                        </div>
-                    </div>
-                    <a href="#submit-idea" class="btn btn-primary">You're Next <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </div>
-        </div>
-    </section>
+
 
     <section class="section" id="submit-idea">
         <div class="container">
@@ -654,6 +748,13 @@
             </div>
         </div>
     </section>
+
+    <section class="cta-section">
+        <div class="container">
+            <h2>Ready to Launch Your Legacy?</h2>
+            <a href="#submit-idea" class="btn">Submit Your Idea Now</a>
+        </div>
+    </section>
 </main>
 
 <footer class="footer">
@@ -684,6 +785,37 @@
         <form class="comment-form">
             <input type="text" placeholder="Add your feedback..." required>
             <button type="submit">Post</button>
+        </form>
+    </div>
+</div>
+
+<div class="modal-overlay" id="authModal">
+    <div class="modal-content">
+        <button class="modal-close" id="authModalCloseBtn">&times;</button>
+        <div class="auth-tabs">
+            <div class="auth-tab active" data-form="login">Login</div>
+            <div class="auth-tab" data-form="signup">Sign Up</div>
+        </div>
+        <form class="auth-form active" id="loginForm">
+            <div class="form-group">
+                <input type="email" class="form-control" placeholder="Email" required>
+            </div>
+            <div class="form-group">
+                <input type="password" class="form-control" placeholder="Password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+        <form class="auth-form" id="signupForm">
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="Full Name" required>
+            </div>
+            <div class="form-group">
+                <input type="email" class="form-control" placeholder="Email" required>
+            </div>
+            <div class="form-group">
+                <input type="password" class="form-control" placeholder="Password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Create Account</button>
         </form>
     </div>
 </div>
@@ -723,11 +855,19 @@
                 navLinks: document.querySelectorAll('.nav-link'),
                 filterGroup: document.getElementById('filterGroup'),
                 sortSelect: document.getElementById('sortSelect'),
-                modal: document.getElementById('commentModal'),
-                modalTitle: document.querySelector('.modal-idea-title'),
-                modalCommentsList: document.querySelector('.comments-list'),
-                modalCommentForm: document.querySelector('.modal-content .comment-form'),
+                // Comment Modal Elements
+                commentModal: document.getElementById('commentModal'),
+                modalTitle: document.querySelector('#commentModal .modal-idea-title'),
+                modalCommentsList: document.querySelector('#commentModal .comments-list'),
+                modalCommentForm: document.querySelector('#commentModal .comment-form'),
                 modalCloseBtn: document.getElementById('modalCloseBtn'),
+                // Auth Modal Elements
+                loginBtn: document.getElementById('loginBtn'),
+                authModal: document.getElementById('authModal'),
+                authModalCloseBtn: document.getElementById('authModalCloseBtn'),
+                authTabs: document.querySelectorAll('.auth-tab'),
+                loginForm: document.getElementById('loginForm'),
+                signupForm: document.getElementById('signupForm'),
             },
 
             state: {
@@ -796,9 +936,6 @@
                 });
             },
 
-            initNavHighlighter() { /* ... unchanged ... */ },
-            initGSAPAnimations() { /* ... unchanged ... */ },
-
             initEventListeners() {
                 // New Idea Form Submission
                 this.elements.ideaForm.addEventListener('submit', e => {
@@ -855,10 +992,10 @@
                     }
                 });
 
-                // Modal Events
+                // Comment Modal Events
                 this.elements.modalCloseBtn.addEventListener('click', () => this.closeCommentModal());
-                this.elements.modal.addEventListener('click', e => {
-                    if (e.target === this.elements.modal) this.closeCommentModal();
+                this.elements.commentModal.addEventListener('click', e => {
+                    if (e.target === this.elements.commentModal) this.closeCommentModal();
                 });
                 this.elements.modalCommentForm.addEventListener('submit', e => {
                     e.preventDefault();
@@ -872,6 +1009,36 @@
                         this.renderAllIdeas(); // Re-render grid to update comment count
                         input.value = '';
                     }
+                });
+
+                // Auth Modal Events
+                this.elements.loginBtn.addEventListener('click', () => this.openAuthModal());
+                this.elements.authModalCloseBtn.addEventListener('click', () => this.closeAuthModal());
+                this.elements.authModal.addEventListener('click', e => {
+                    if(e.target === this.elements.authModal) this.closeAuthModal();
+                });
+
+                this.elements.authTabs.forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        this.elements.authTabs.forEach(t => t.classList.remove('active'));
+                        tab.classList.add('active');
+                        const formToShow = tab.dataset.form;
+                        document.querySelectorAll('.auth-form').forEach(form => {
+                            form.classList.toggle('active', form.id === `${formToShow}Form`);
+                        });
+                    });
+                });
+
+                this.elements.loginForm.addEventListener('submit', e => {
+                    e.preventDefault();
+                    this.showToast('Logged in successfully! (Demo)');
+                    this.closeAuthModal();
+                });
+
+                this.elements.signupForm.addEventListener('submit', e => {
+                    e.preventDefault();
+                    this.showToast('Account created successfully! (Demo)');
+                    this.closeAuthModal();
                 });
             },
 
@@ -922,15 +1089,23 @@
             `;
             },
 
+            openAuthModal() {
+                this.elements.authModal.classList.add('visible');
+            },
+
+            closeAuthModal() {
+                this.elements.authModal.classList.remove('visible');
+            },
+
             openCommentModal(idea) {
                 this.state.activeModalIdeaId = idea.id;
                 this.elements.modalTitle.textContent = idea.title;
                 this.updateModalComments(idea);
-                this.elements.modal.classList.add('visible');
+                this.elements.commentModal.classList.add('visible');
             },
 
             closeCommentModal() {
-                this.elements.modal.classList.remove('visible');
+                this.elements.commentModal.classList.remove('visible');
                 this.state.activeModalIdeaId = null;
             },
 
@@ -951,34 +1126,42 @@
                     toast.classList.remove('show');
                     toast.addEventListener('transitionend', () => toast.remove());
                 }, 3000);
+            },
+
+            initNavHighlighter() {
+                window.addEventListener('scroll', () => {
+                    let scrollY = window.pageYOffset;
+                    let currentSectionId = '';
+
+                    this.elements.sections.forEach(current => {
+                        const sectionTop = current.offsetTop - 150;
+                        if (scrollY >= sectionTop) {
+                            currentSectionId = current.getAttribute('id');
+                        }
+                    });
+
+                    this.elements.navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${currentSectionId}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                });
+            },
+
+            initGSAPAnimations() {
+                gsap.registerPlugin(ScrollTrigger);
+                gsap.from('.hero-content > *', { opacity: 0, y: 30, duration: 1, stagger: 0.2, ease: 'power3.out' });
+
+                const animatedElements = document.querySelectorAll('.section-header, .idea-card, .idea-form-container, .about-grid > *, .how-it-works-step');
+
+                animatedElements.forEach(el => {
+                    gsap.from(el, {
+                        opacity: 0, y: 50, duration: 0.8,
+                        scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none none' }
+                    });
+                });
             }
-        };
-
-        // Simplified nav highlighter and GSAP animations for brevity in this context
-        App.initNavHighlighter = () => {
-            window.addEventListener('scroll', () => {
-                let scrollY = window.pageYOffset;
-                App.elements.sections.forEach(current => {
-                    const sectionTop = current.offsetTop - 150;
-                    let sectionId = current.getAttribute('id');
-                    if (scrollY > sectionTop && scrollY <= sectionTop + current.offsetHeight) {
-                        App.elements.navLinks.forEach(l => l.classList.remove('active'));
-                        document.querySelector(`.nav-link[href*='${sectionId}']`)?.classList.add('active');
-                    }
-                });
-            });
-        };
-
-        App.initGSAPAnimations = () => {
-            gsap.registerPlugin(ScrollTrigger);
-            gsap.from('.hero-content > *', { opacity: 0, y: 30, duration: 1, stagger: 0.2, ease: 'power3.out' });
-
-            document.querySelectorAll('.section-header, .idea-card, .idea-form-container, .about-grid > *').forEach(el => {
-                gsap.from(el, {
-                    opacity: 0, y: 50, duration: 0.8,
-                    scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none none' }
-                });
-            });
         };
 
         App.init();
