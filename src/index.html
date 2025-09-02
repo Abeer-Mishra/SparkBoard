@@ -142,7 +142,7 @@
             letter-spacing: 1.5px;
         }
         .section-header h2 { font-size: clamp(2.5rem, 5vw, 3.5rem); font-weight: 800; margin-bottom: 24px; }
-        .section-header p { font-size: 18px; color: var(--text-secondary); max-width: 600px; margin: 0 auto; }
+        .section-header p { font-size: 18px; color: var(--text-secondary); max-width: 700px; margin: 0 auto; }
 
         .btn {
             display: inline-flex;
@@ -156,6 +156,7 @@
             border: none;
             cursor: pointer;
             overflow: hidden;
+            text-align: center;
         }
         .btn-primary {
             background: var(--accent-color);
@@ -176,7 +177,6 @@
         }
         .btn-secondary:hover {
             background-color: var(--border-color);
-            color: white;
         }
         body.light-theme .btn-secondary:hover { color: var(--text-primary); }
 
@@ -187,7 +187,7 @@
             position: fixed;
             top: 20px; left: 50%;
             transform: translateX(-50%);
-            width: 95%; max-width: 800px;
+            width: 95%; max-width: 900px;
             z-index: 1000;
         }
         .nav-content {
@@ -345,9 +345,6 @@
         /* ------------------- */
         /* --- How It Works Section --- */
         /* ------------------- */
-        #how-it-works {
-            background-color: transparent;
-        }
         .how-it-works-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -402,6 +399,178 @@
         .stat-item .stat-number { font-size: 48px; font-weight: 800; color: var(--accent-color); }
         .stat-item .stat-label { font-size: 14px; color: var(--text-secondary); }
         .about-cta .btn { width: 100%; justify-content: center; }
+
+        /* ------------------- */
+        /* --- Workshop Section --- */
+        /* ------------------- */
+        .workshop-filters {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+        .workshop-filter {
+            padding: 12px 24px;
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition-speed);
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        .workshop-filter:hover {
+            background: var(--border-color); color: var(--text-primary);
+        }
+        .workshop-filter.active {
+            background: var(--accent-color);
+            border-color: var(--accent-color);
+            color: var(--bg-secondary);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+        body.light-theme .workshop-filter.active { color: white; }
+
+        .workshops-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .workshop-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            overflow: hidden;
+            transition: var(--transition-speed);
+            position: relative;
+        }
+        .workshop-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .workshop-image {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .workshop-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .workshop-card:hover .workshop-image img {
+            transform: scale(1.1);
+        }
+
+        .workshop-date {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            background: var(--bg-secondary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-md);
+        }
+        .workshop-date.past {
+            background: var(--bg-primary);
+        }
+        .date-day {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--accent-color);
+        }
+        .date-month {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            text-transform: uppercase;
+        }
+        .workshop-category-tag {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 6px 16px;
+            border-radius: 20px;
+            background: var(--accent-color);
+            color: var(--bg-secondary);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        body.light-theme .workshop-category-tag { color: white; }
+        .workshop-category-tag.premium {
+            background: var(--secondary-accent);
+        }
+
+        .workshop-content {
+            padding: 25px;
+        }
+        .workshop-title {
+            font-size: 1.4rem;
+            margin-bottom: 0.8rem;
+            color: var(--text-primary);
+            line-height: 1.4;
+        }
+        .workshop-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        .workshop-details {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .workshop-detail {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        .workshop-detail i {
+            color: var(--accent-color);
+        }
+        .workshop-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1.2rem;
+            border-top: 1px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .workshop-instructor {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        .workshop-instructor img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .workshop-instructor span {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
 
         /* ------------------- */
         /* --- CTA Section --- */
@@ -506,9 +675,6 @@
         /* ------------------- */
         /* --- Submit Form Section --- */
         /* ------------------- */
-        #submit-idea {
-            background-color: transparent;
-        }
         .idea-form-container {
             max-width: 900px; margin: 0 auto;
             background: var(--bg-primary);
@@ -550,8 +716,26 @@
             font-size: 18px;
             justify-content: center;
         }
+        /* --- Toast Notification --- */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background-color: #2c3e50;
+            color: var(--text-primary-dark);
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: var(--shadow-lg);
+            z-index: 3000;
+            opacity: 0;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+        }
 
-        body.light-theme .toast { color: white; }
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
 
         /* ------------------- */
         /* --- Footer --- */
@@ -590,9 +774,12 @@
         </a>
         <div class="nav-links" id="nav-links">
             <a href="#hero" class="nav-link active">Home</a>
-            <a href="#ideas" class="nav-link">Ideas</a>
             <a href="#how-it-works" class="nav-link">How It Works</a>
             <a href="#about" class="nav-link">About</a>
+            <a href="#ideas" class="nav-link">Ideas</a>
+            <a href="#workshops" class="nav-link">Workshops</a>
+
+
         </div>
         <div class="nav-actions">
             <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
@@ -616,6 +803,7 @@
             </div>
         </div>
     </section>
+
 
     <section class="section" id="how-it-works">
         <div class="container">
@@ -674,7 +862,7 @@
         </div>
     </section>
 
-    <section class="section ideas" id="ideas">
+    <section class="section" id="ideas">
         <div class="container">
             <div class="section-header">
                 <span class="subtitle">Idea Gallery</span>
@@ -691,7 +879,7 @@
                     <button class="filter-btn" data-category="Social">Social</button>
                 </div>
                 <div class="sort-group">
-                    <select id="sortSelect" aria-label="Sort ideas">
+                    <select id="sortSelect" aria-label="Sort ideas" class="form-control">
                         <option value="latest">Sort by: Latest</option>
                         <option value="likes">Sort by: Most Liked</option>
                         <option value="comments">Sort by: Most Comments</option>
@@ -704,6 +892,107 @@
         </div>
     </section>
 
+    <section class="section" id="workshops">
+        <div class="container">
+            <div class="section-header">
+                <span class="subtitle">Skill Up</span>
+                <h2>Upcoming Workshops</h2>
+                <p>
+                    Join our interactive workshops to develop your entrepreneurial skills, learn from experts, and connect with other young innovators.
+                </p>
+            </div>
+
+            <div class="workshop-filters">
+                <button class="workshop-filter active" data-filter="all">All</button>
+                <button class="workshop-filter" data-filter="upcoming">Upcoming</button>
+                <button class="workshop-filter" data-filter="past">Past</button>
+                <button class="workshop-filter" data-filter="free">Free</button>
+            </div>
+
+            <div class="workshops-grid">
+                <div class="workshop-card" data-category="upcoming free">
+                    <div class="workshop-image">
+                        <img src="https://images.unsplash.com/photo-1543269865-cbf427effbad?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Ideation Workshop">
+                        <div class="workshop-date">
+                            <span class="date-day">15</span>
+                            <span class="date-month">Oct</span>
+                        </div>
+                        <div class="workshop-category-tag">Free</div>
+                    </div>
+                    <div class="workshop-content">
+                        <h3 class="workshop-title">Ideation & Brainstorming Session</h3>
+                        <p class="workshop-description">Learn techniques to generate innovative ideas and solve real-world problems creatively.</p>
+                        <div class="workshop-details">
+                            <div class="workshop-detail"><i class="fas fa-clock"></i><span>2 hours</span></div>
+                            <div class="workshop-detail"><i class="fas fa-users"></i><span>Beginner</span></div>
+                            <div class="workshop-detail"><i class="fas fa-video"></i><span>Online</span></div>
+                        </div>
+                        <div class="workshop-footer">
+                            <div class="workshop-instructor">
+                                <img src="https://randomuser.me/api/portraits/women/43.jpg" alt="Instructor">
+                                <span>Sarah Johnson</span>
+                            </div>
+                            <button class="btn btn-primary">Register Now</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="workshop-card" data-category="upcoming">
+                    <div class="workshop-image">
+                        <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Business Planning">
+                        <div class="workshop-date">
+                            <span class="date-day">22</span>
+                            <span class="date-month">Oct</span>
+                        </div>
+                        <div class="workshop-category-tag premium">Premium</div>
+                    </div>
+                    <div class="workshop-content">
+                        <h3 class="workshop-title">Business Plan Development</h3>
+                        <p class="workshop-description">Transform your idea into a solid business plan with guidance from experienced entrepreneurs.</p>
+                        <div class="workshop-details">
+                            <div class="workshop-detail"><i class="fas fa-clock"></i><span>4 hours</span></div>
+                            <div class="workshop-detail"><i class="fas fa-users"></i><span>Intermediate</span></div>
+                            <div class="workshop-detail"><i class="fas fa-map-marker-alt"></i><span>In-Person</span></div>
+                        </div>
+                        <div class="workshop-footer">
+                            <div class="workshop-instructor">
+                                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Instructor">
+                                <span>Michael Rodriguez</span>
+                            </div>
+                            <button class="btn btn-primary">Register Now</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="workshop-card" data-category="past">
+                    <div class="workshop-image">
+                        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Pitch Workshop">
+                        <div class="workshop-date past">
+                            <span class="date-day">05</span>
+                            <span class="date-month">Sep</span>
+                        </div>
+                        <div class="workshop-category-tag">Free</div>
+                    </div>
+                    <div class="workshop-content">
+                        <h3 class="workshop-title">Pitch Perfect: Presenting Your Idea</h3>
+                        <p class="workshop-description">Master the art of pitching your startup idea to investors, customers, and competitions.</p>
+                        <div class="workshop-details">
+                            <div class="workshop-detail"><i class="fas fa-clock"></i><span>3 hours</span></div>
+                            <div class="workshop-detail"><i class="fas fa-users"></i><span>All Levels</span></div>
+                            <div class="workshop-detail"><i class="fas fa-video"></i><span>Online</span></div>
+                        </div>
+                        <div class="workshop-footer">
+                            <div class="workshop-instructor">
+                                <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Instructor">
+                                <span>Jennifer Lee</span>
+                            </div>
+                            <button class="btn btn-secondary">Watch Recording</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
 
     <section class="section" id="submit-idea">
@@ -743,6 +1032,10 @@
                             <option value="Other">Other</option>
                         </select>
                     </div>
+                    <div class="form-group">
+                        <label for="contactEmail">Contact Email</label>
+                        <input type="email" id="contactEmail" class="form-control" placeholder="Your email for collaboration" required>
+                    </div>
                     <button type="submit" class="btn btn-primary form-submit-btn">Launch Idea</button>
                 </form>
             </div>
@@ -766,6 +1059,7 @@
         <div class="footer-links">
             <a href="#hero">Home</a>
             <a href="#ideas">Ideas</a>
+            <a href="#workshops">Workshops</a>
             <a href="#about">About</a>
             <a href="#submit-idea">Submit</a>
             <a href="#">Privacy Policy</a>
@@ -829,21 +1123,27 @@
             ideas: [
                 {
                     id: `idea-${Date.now()}-1`, name: "Alex Johnson", title: "Campus Compost Collective",
-                    problem: "Food waste from university dining halls is a major environmental issue.",
+                    problem: "Food waste from university dining halls is a major environmental issue, contributing to landfill mass and methane emissions.",
                     solution: "A student-run program that collects food scraps from dining halls and local cafes to turn into compost for campus gardens.",
                     category: "Environment", likes: 15, commentsList: ["This is a fantastic initiative!", "How can I get involved?"], isLiked: false, timestamp: Date.now() - 100000
                 },
                 {
                     id: `idea-${Date.now()}-2`, name: "Maria Garcia", title: "SkillSwap",
-                    problem: "Students have valuable skills but often lack a platform to trade them without money.",
+                    problem: "Students have valuable skills but often lack a platform to trade them without money, limiting access to learning opportunities.",
                     solution: "A mobile app where students can offer services (like tutoring in Python) in exchange for other services (like guitar lessons).",
                     category: "Social", likes: 28, commentsList: ["I've been wanting this forever.", "Is a web version planned?"], isLiked: true, timestamp: Date.now() - 50000
                 },
                 {
                     id: `idea-${Date.now()}-3`, name: "Kenji Tanaka", title: "AI-Powered Study Buddy",
-                    problem: "Generic study guides don't adapt to individual learning styles or weaknesses.",
+                    problem: "Generic study guides don't adapt to individual learning styles or weaknesses, making studying inefficient for many.",
                     solution: "An application that uses machine learning to analyze a student's practice test results and generates personalized study plans and flashcards.",
                     category: "Technology", likes: 42, commentsList: ["Game changer for finals week!"], isLiked: false, timestamp: Date.now()
+                },
+                {
+                    id: `idea-${Date.now()}-4`, name: "Chloe Kim", title: "Mental Health Peer Support Network",
+                    problem: "Access to professional mental health services can be limited and intimidating for students. Peer support can be a valuable first step.",
+                    solution: "A moderated online platform connecting students for anonymous peer-to-peer mental health support, with resources and clear escalation paths to professionals.",
+                    category: "Healthcare", likes: 58, commentsList: ["This is so needed.", "What are the safety protocols?"], isLiked: false, timestamp: Date.now() - 200000
                 },
             ],
 
@@ -855,13 +1155,13 @@
                 navLinks: document.querySelectorAll('.nav-link'),
                 filterGroup: document.getElementById('filterGroup'),
                 sortSelect: document.getElementById('sortSelect'),
-                // Comment Modal Elements
+                workshopFilters: document.querySelector('.workshop-filters'),
+                workshopCards: document.querySelectorAll('.workshop-card'),
                 commentModal: document.getElementById('commentModal'),
                 modalTitle: document.querySelector('#commentModal .modal-idea-title'),
                 modalCommentsList: document.querySelector('#commentModal .comments-list'),
                 modalCommentForm: document.querySelector('#commentModal .comment-form'),
                 modalCloseBtn: document.getElementById('modalCloseBtn'),
-                // Auth Modal Elements
                 loginBtn: document.getElementById('loginBtn'),
                 authModal: document.getElementById('authModal'),
                 authModalCloseBtn: document.getElementById('authModalCloseBtn'),
@@ -910,10 +1210,10 @@
                 renderer.setSize(window.innerWidth, window.innerHeight);
 
                 const particlesGeometry = new THREE.BufferGeometry();
-                const particlesCount = 1500;
+                const particlesCount = 2000; // Increased particle count for a denser field
                 const posArray = new Float32Array(particlesCount * 3);
                 for (let i = 0; i < particlesCount * 3; i++) {
-                    posArray[i] = (Math.random() - 0.5) * 15;
+                    posArray[i] = (Math.random() - 0.5) * 20; // Increased spread
                 }
                 particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
 
@@ -922,9 +1222,37 @@
                 scene.add(particlesMesh);
                 camera.position.z = 5;
 
+                // --- START: New mouse interaction logic ---
+                let mouseX = 0;
+                let mouseY = 0;
+
+                document.addEventListener('mousemove', (event) => {
+                    // Normalize mouse position from -1 to 1
+                    mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+                    mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+                });
+
+                const clock = new THREE.Clock();
+                // --- END: New mouse interaction logic ---
+
                 const animate = () => {
                     requestAnimationFrame(animate);
-                    particlesMesh.rotation.y += 0.0003;
+
+                    // --- START: Updated animation loop ---
+                    const elapsedTime = clock.getElapsedTime();
+
+                    // Base rotation
+                    particlesMesh.rotation.y = elapsedTime * 0.05;
+
+                    // Mouse parallax effect with smooth interpolation (lerp)
+                    // This creates a gentle "look at" effect that feels fluid
+                    const targetRotationX = mouseY * 0.3;
+                    const targetRotationY = mouseX * 0.3;
+
+                    particlesMesh.rotation.x += (targetRotationX - particlesMesh.rotation.x) * 0.05;
+                    particlesMesh.rotation.y += (targetRotationY - particlesMesh.rotation.y) * 0.05;
+                    // --- END: Updated animation loop ---
+
                     renderer.render(scene, camera);
                 };
                 animate();
@@ -957,7 +1285,7 @@
                     this.showToast('Your idea has been launched!');
                 });
 
-                // Filtering and Sorting
+                // Filtering and Sorting for Ideas
                 this.elements.filterGroup.addEventListener('click', e => {
                     if (e.target.tagName === 'BUTTON') {
                         this.elements.filterGroup.querySelector('.active').classList.remove('active');
@@ -983,13 +1311,45 @@
                     if (e.target.closest('.card-action-like')) {
                         idea.isLiked = !idea.isLiked;
                         idea.likes += idea.isLiked ? 1 : -1;
-                        this.renderAllIdeas(); // Re-render to update UI
+                        this.renderAllIdeas();
                     }
 
                     // Handle Comment Modal Open
                     if (e.target.closest('.card-action-comment')) {
                         this.openCommentModal(idea);
                     }
+                });
+
+                // Workshop Filter Logic
+                this.elements.workshopFilters.addEventListener('click', e => {
+                    if (e.target.tagName !== 'BUTTON') return;
+
+                    this.elements.workshopFilters.querySelector('.active').classList.remove('active');
+                    e.target.classList.add('active');
+                    const filterValue = e.target.dataset.filter;
+
+                    this.elements.workshopCards.forEach(card => {
+                        const cardCategory = card.dataset.category;
+                        if (filterValue === 'all' || cardCategory.includes(filterValue)) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+
+                // Add event listeners for workshop buttons, replacing alert()
+                document.querySelectorAll('.workshop-card .btn').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const card = e.target.closest('.workshop-card');
+                        const workshopTitle = card.querySelector('.workshop-title').textContent;
+                        if (button.textContent.trim() === 'Register Now') {
+                            this.showToast(`Registered for "${workshopTitle}"! (Demo)`);
+                        } else {
+                            this.showToast(`Viewing recording for "${workshopTitle}"! (Demo)`);
+                        }
+                    });
                 });
 
                 // Comment Modal Events
@@ -1153,7 +1513,7 @@
                 gsap.registerPlugin(ScrollTrigger);
                 gsap.from('.hero-content > *', { opacity: 0, y: 30, duration: 1, stagger: 0.2, ease: 'power3.out' });
 
-                const animatedElements = document.querySelectorAll('.section-header, .idea-card, .idea-form-container, .about-grid > *, .how-it-works-step');
+                const animatedElements = document.querySelectorAll('.section-header, .idea-card, .workshop-card, .idea-form-container, .about-grid > *, .how-it-works-step');
 
                 animatedElements.forEach(el => {
                     gsap.from(el, {
