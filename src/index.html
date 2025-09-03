@@ -158,6 +158,10 @@
             overflow: hidden;
             text-align: center;
         }
+        .btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
         .btn-primary {
             background: var(--accent-color);
             color: var(--bg-secondary);
@@ -166,7 +170,7 @@
         body.light-theme .btn-primary {
             color: white;
         }
-        .btn-primary:hover {
+        .btn-primary:hover:not(:disabled) {
             transform: translateY(-3px) scale(1.02);
             box-shadow: 0 0 30px var(--accent-glow);
         }
@@ -175,10 +179,10 @@
             color: var(--text-primary);
             border: 1px solid var(--border-color);
         }
-        .btn-secondary:hover {
+        .btn-secondary:hover:not(:disabled) {
             background-color: var(--border-color);
         }
-        body.light-theme .btn-secondary:hover { color: var(--text-primary); }
+        body.light-theme .btn-secondary:hover:not(:disabled) { color: var(--text-primary); }
 
         /* ------------------- */
         /* --- Floating Nav --- */
@@ -228,7 +232,8 @@
             color: var(--accent-color);
             transform: scale(1.1) rotate(15deg);
         }
-        #loginBtn { font-size: 14px; padding: 8px 20px; }
+        #authBtn { font-size: 14px; padding: 8px 20px; }
+        #userInfo { font-size: 14px; color: var(--text-secondary); font-weight: 500; }
 
         /* ------------------- */
         /* --- Hero Section --- */
@@ -625,12 +630,16 @@
 
         /* --- Comment Modal --- */
         .modal-idea-title { font-size: 24px; margin-bottom: 24px; }
-        .comments-list { max-height: 250px; overflow-y: auto; margin-bottom: 24px; }
+        .comments-list { max-height: 250px; overflow-y: auto; margin-bottom: 24px; padding-right: 10px; }
         .comment-item {
             padding: 12px 0; border-bottom: 1px solid var(--border-color);
-            font-size: 15px; color: var(--text-secondary);
+            font-size: 15px;
         }
+        .comment-author { font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+        .comment-text { color: var(--text-secondary); }
         .comment-item:first-child { padding-top: 0; }
+        .comment-item:last-child { border-bottom: none; }
+
         .comment-form { display: flex; gap: 10px; }
         .comment-form input {
             flex-grow: 1; background: var(--bg-primary);
@@ -731,6 +740,8 @@
             opacity: 0;
             transition: transform 0.5s ease, opacity 0.5s ease;
         }
+        .toast.error { background-color: #e74c3c; }
+        .toast.success { background-color: #27ae60; }
 
         .toast.show {
             transform: translateX(-50%) translateY(0);
@@ -754,6 +765,11 @@
         /* ------------------- */
         /* --- Responsive Design --- */
         /* ------------------- */
+        @media (max-width: 1024px) {
+            #userInfo {
+                display: none !important;
+            }
+        }
         @media (max-width: 992px) {
             .nav-links { display: none; }
         }
@@ -778,14 +794,13 @@
             <a href="#about" class="nav-link">About</a>
             <a href="#ideas" class="nav-link">Ideas</a>
             <a href="#workshops" class="nav-link">Workshops</a>
-
-
         </div>
         <div class="nav-actions">
+            <span id="userInfo" style="display: none;"></span>
             <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
                 <i class="fas fa-moon"></i>
             </button>
-            <button class="btn btn-secondary" id="loginBtn">Login / Sign Up</button>
+            <button class="btn btn-secondary" id="authBtn">Login / Sign Up</button>
         </div>
     </nav>
 </header>
@@ -803,7 +818,6 @@
             </div>
         </div>
     </section>
-
 
     <section class="section" id="how-it-works">
         <div class="container">
@@ -848,11 +862,11 @@
                     <h3>Join the Movement</h3>
                     <div class="stats-grid">
                         <div class="stat-item">
-                            <div class="stat-number">1,200+</div>
+                            <div class="stat-number" id="innovatorCount">1200+</div>
                             <div class="stat-label">Innovators</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-number">450+</div>
+                            <div class="stat-number" id="ideaCount">850+</div>
                             <div class="stat-label">Ideas Launched</div>
                         </div>
                     </div>
@@ -888,10 +902,12 @@
             </div>
 
             <div class="ideas-grid" id="ideasGrid">
+                <!-- Ideas will be dynamically inserted here by JavaScript -->
             </div>
         </div>
     </section>
 
+    <!-- Workshop Section remains unchanged, as it's static content -->
     <section class="section" id="workshops">
         <div class="container">
             <div class="section-header">
@@ -994,21 +1010,16 @@
         </div>
     </section>
 
-
     <section class="section" id="submit-idea">
         <div class="container">
             <div class="section-header">
                 <span class="subtitle">Launch Your Idea</span>
                 <h2>What's Your Spark?</h2>
-                <p>Fill out the form to share your concept with the community. The next big thing could be yours.</p>
+                <p id="submit-idea-prompt">Log in to share your concept with the community. The next big thing could be yours.</p>
             </div>
             <div class="idea-form-container">
                 <form id="ideaForm">
-                    <div class="form-group">
-                        <label for="studentName">Your Name</label>
-                        <input type="text" id="studentName" class="form-control" placeholder="e.g., Ada Lovelace" required>
-                    </div>
-                    <div class="form-group">
+                    <div class="form-group form-group-full">
                         <label for="startupIdea">Idea Title</label>
                         <input type="text" id="startupIdea" class="form-control" placeholder="e.g., Quantum Coffee Maker" required>
                     </div>
@@ -1033,10 +1044,10 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="contactEmail">Contact Email</label>
-                        <input type="email" id="contactEmail" class="form-control" placeholder="Your email for collaboration" required>
+                        <label for="studentName">Your Display Name</label>
+                        <input type="text" id="studentName" class="form-control" placeholder="e.g., Ada L." required>
                     </div>
-                    <button type="submit" class="btn btn-primary form-submit-btn">Launch Idea</button>
+                    <button type="submit" class="btn btn-primary form-submit-btn" disabled>Login to Launch Idea</button>
                 </form>
             </div>
         </div>
@@ -1092,60 +1103,83 @@
         </div>
         <form class="auth-form active" id="loginForm">
             <div class="form-group">
-                <input type="email" class="form-control" placeholder="Email" required>
+                <input type="email" class="form-control" placeholder="Email" required id="loginEmail">
             </div>
             <div class="form-group">
-                <input type="password" class="form-control" placeholder="Password" required>
+                <input type="password" class="form-control" placeholder="Password" required id="loginPassword">
             </div>
             <button type="submit" class="btn btn-primary">Login</button>
         </form>
         <form class="auth-form" id="signupForm">
             <div class="form-group">
-                <input type="text" class="form-control" placeholder="Full Name" required>
+                <input type="email" class="form-control" placeholder="Email" required id="signupEmail">
             </div>
             <div class="form-group">
-                <input type="email" class="form-control" placeholder="Email" required>
-            </div>
-            <div class="form-group">
-                <input type="password" class="form-control" placeholder="Password" required>
+                <input type="password" class="form-control" placeholder="Password (min. 6 characters)" required id="signupPassword">
             </div>
             <button type="submit" class="btn btn-primary">Create Account</button>
         </form>
     </div>
 </div>
 
+<script type="module">
+    // --- Firebase SDKs ---
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import {
+        getAuth,
+        onAuthStateChanged,
+        createUserWithEmailAndPassword,
+        signInWithEmailAndPassword,
+        signOut,
+        signInAnonymously,
+        signInWithCustomToken
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import {
+        getFirestore,
+        collection,
+        addDoc,
+        onSnapshot,
+        doc,
+        updateDoc,
+        arrayUnion,
+        arrayRemove,
+        serverTimestamp,
+        query,
+        getDocs,
+        setLogLevel
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-<script>
     document.addEventListener('DOMContentLoaded', function() {
+
+        // --- Firebase Config ---
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDR9G3XTVc7pmxoJC5fmvfFKF9bb8rHljA",
+            authDomain: "sparkboard-dc25.firebaseapp.com",
+            projectId: "sparkboard-dc25",
+            storageBucket: "sparkboard-dc25.appspot.com",
+            messagingSenderId: "956447856941",
+            appId: "1:956447856941:web:0371321269cb17be925ba4",
+            measurementId: "G-CKW6F7J2DS"
+        };
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'sparkboard-dc25';
+
+        // --- Firebase Initialization ---
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        setLogLevel('debug'); // For detailed console logs
+
+        // --- Firestore Collections ---
+        const ideasCollectionRef = collection(db, `/artifacts/${appId}/public/data/ideas`);
 
         const App = {
             // --- Properties ---
-            ideas: [
-                {
-                    id: `idea-${Date.now()}-1`, name: "Alex Johnson", title: "Campus Compost Collective",
-                    problem: "Food waste from university dining halls is a major environmental issue, contributing to landfill mass and methane emissions.",
-                    solution: "A student-run program that collects food scraps from dining halls and local cafes to turn into compost for campus gardens.",
-                    category: "Environment", likes: 15, commentsList: ["This is a fantastic initiative!", "How can I get involved?"], isLiked: false, timestamp: Date.now() - 100000
-                },
-                {
-                    id: `idea-${Date.now()}-2`, name: "Maria Garcia", title: "SkillSwap",
-                    problem: "Students have valuable skills but often lack a platform to trade them without money, limiting access to learning opportunities.",
-                    solution: "A mobile app where students can offer services (like tutoring in Python) in exchange for other services (like guitar lessons).",
-                    category: "Social", likes: 28, commentsList: ["I've been wanting this forever.", "Is a web version planned?"], isLiked: true, timestamp: Date.now() - 50000
-                },
-                {
-                    id: `idea-${Date.now()}-3`, name: "Kenji Tanaka", title: "AI-Powered Study Buddy",
-                    problem: "Generic study guides don't adapt to individual learning styles or weaknesses, making studying inefficient for many.",
-                    solution: "An application that uses machine learning to analyze a student's practice test results and generates personalized study plans and flashcards.",
-                    category: "Technology", likes: 42, commentsList: ["Game changer for finals week!"], isLiked: false, timestamp: Date.now()
-                },
-                {
-                    id: `idea-${Date.now()}-4`, name: "Chloe Kim", title: "Mental Health Peer Support Network",
-                    problem: "Access to professional mental health services can be limited and intimidating for students. Peer support can be a valuable first step.",
-                    solution: "A moderated online platform connecting students for anonymous peer-to-peer mental health support, with resources and clear escalation paths to professionals.",
-                    category: "Healthcare", likes: 58, commentsList: ["This is so needed.", "What are the safety protocols?"], isLiked: false, timestamp: Date.now() - 200000
-                },
-            ],
+            ideas: [], // This will be populated from Firestore
+            unsubscribe: null, // To store the onSnapshot listener
+            baseInnovatorCount: 1200, // Prefixed amount for innovators
+            baseIdeaCount: 850,       // Prefixed amount for ideas
 
             elements: {
                 themeToggle: document.getElementById('themeToggle'),
@@ -1162,30 +1196,134 @@
                 modalCommentsList: document.querySelector('#commentModal .comments-list'),
                 modalCommentForm: document.querySelector('#commentModal .comment-form'),
                 modalCloseBtn: document.getElementById('modalCloseBtn'),
-                loginBtn: document.getElementById('loginBtn'),
+                authBtn: document.getElementById('authBtn'),
+                userInfo: document.getElementById('userInfo'),
                 authModal: document.getElementById('authModal'),
                 authModalCloseBtn: document.getElementById('authModalCloseBtn'),
                 authTabs: document.querySelectorAll('.auth-tab'),
                 loginForm: document.getElementById('loginForm'),
                 signupForm: document.getElementById('signupForm'),
+                ideaCount: document.getElementById('ideaCount'),
+                innovatorCount: document.getElementById('innovatorCount'),
+                ideaFormSubmitBtn: document.querySelector('#ideaForm .form-submit-btn'),
+                submitIdeaPrompt: document.getElementById('submit-idea-prompt'),
             },
 
             state: {
                 activeFilter: 'All',
                 activeSort: 'latest',
                 activeModalIdeaId: null,
+                currentUser: null,
             },
 
-            init() {
+            async init() {
                 this.initTheme();
                 this.init3DBackground();
                 this.initNavHighlighter();
                 this.initGSAPAnimations();
                 this.initEventListeners();
-                this.renderAllIdeas();
+                await this.initAuth(); // Handles auth and then fetches data
             },
 
-            // --- Core Methods ---
+            async initAuth() {
+                onAuthStateChanged(auth, user => {
+                    if (user) {
+                        this.state.currentUser = {
+                            uid: user.uid,
+                            email: user.email,
+                            isAnonymous: user.isAnonymous
+                        };
+                        console.log("User is signed in:", this.state.currentUser);
+                    } else {
+                        this.state.currentUser = null;
+                        console.log("User is signed out.");
+                    }
+                    this.updateUIForAuthState();
+                    this.fetchIdeas(); // Fetch ideas whenever auth state changes
+                });
+
+                try {
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+                } catch(error) {
+                    console.error("Authentication failed", error);
+                    this.showToast('Could not connect to the service.', 'error');
+                }
+            },
+
+            updateUIForAuthState() {
+                const navEl = document.querySelector('.floating-nav');
+                if (this.state.currentUser && !this.state.currentUser.isAnonymous) {
+                    // --- Login State ---
+                    this.elements.authBtn.textContent = 'Logout';
+                    this.elements.userInfo.textContent = this.state.currentUser.email;
+                    this.elements.userInfo.style.display = 'inline';
+                    this.elements.userInfo.style.opacity = 0;
+
+                    // Animate navbar widening
+                    gsap.to(navEl, {
+                        maxWidth: 1100,
+                        duration: 1.2,
+                        ease: "elastic.out(1, 0.7)",
+                    });
+
+                    // Animate the user info fading in during the expansion
+                    gsap.to(this.elements.userInfo, {
+                        opacity: 1,
+                        duration: 0.6, // a bit faster than the main animation
+                        delay: 0.4, // start after the expansion has begun
+                        ease: "power2.inOut"
+                    });
+
+
+                    this.elements.ideaFormSubmitBtn.disabled = false;
+                    this.elements.ideaFormSubmitBtn.textContent = 'Launch Idea';
+                    this.elements.submitIdeaPrompt.textContent = "Fill out the form to share your concept with the community. The next big thing could be yours.";
+                } else {
+                    // --- Logout State ---
+                    gsap.to(this.elements.userInfo, {
+                        opacity: 0,
+                        duration: 0.3,
+                        onComplete: () => {
+                            this.elements.userInfo.style.display = 'none';
+                            // Start shrinking AFTER text is gone from layout
+                            gsap.to(navEl, {
+                                maxWidth: 900,
+                                duration: 0.8,
+                                ease: "power3.inOut"
+                            });
+                        }
+                    });
+
+                    this.elements.authBtn.textContent = 'Login / Sign Up';
+                    this.elements.ideaFormSubmitBtn.disabled = true;
+                    this.elements.ideaFormSubmitBtn.textContent = 'Login to Launch Idea';
+                    this.elements.submitIdeaPrompt.textContent = "Log in to share your concept with the community. The next big thing could be yours.";
+                }
+            },
+
+            fetchIdeas() {
+                if (this.unsubscribe) this.unsubscribe(); // Detach old listener
+
+                this.unsubscribe = onSnapshot(query(ideasCollectionRef), (snapshot) => {
+                    this.ideas = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    this.renderAllIdeas();
+                    this.updateStats();
+                }, (error) => {
+                    console.error("Error fetching ideas: ", error);
+                    this.showToast("Could not fetch ideas.", 'error');
+                });
+            },
+
+            async updateStats() {
+                this.elements.ideaCount.textContent = `${this.baseIdeaCount + this.ideas.length}+`;
+                const uniqueInnovators = new Set(this.ideas.map(idea => idea.authorId));
+                this.elements.innovatorCount.textContent = `${this.baseInnovatorCount + uniqueInnovators.size}+`;
+            },
+
             initTheme() {
                 const isLightMode = localStorage.getItem('lightMode') === 'true';
                 if (isLightMode) {
@@ -1210,10 +1348,10 @@
                 renderer.setSize(window.innerWidth, window.innerHeight);
 
                 const particlesGeometry = new THREE.BufferGeometry();
-                const particlesCount = 2000; // Increased particle count for a denser field
+                const particlesCount = 2000;
                 const posArray = new Float32Array(particlesCount * 3);
                 for (let i = 0; i < particlesCount * 3; i++) {
-                    posArray[i] = (Math.random() - 0.5) * 20; // Increased spread
+                    posArray[i] = (Math.random() - 0.5) * 20;
                 }
                 particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
 
@@ -1222,37 +1360,24 @@
                 scene.add(particlesMesh);
                 camera.position.z = 5;
 
-                // --- START: New mouse interaction logic ---
                 let mouseX = 0;
                 let mouseY = 0;
 
                 document.addEventListener('mousemove', (event) => {
-                    // Normalize mouse position from -1 to 1
                     mouseX = (event.clientX / window.innerWidth) * 2 - 1;
                     mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
                 });
 
                 const clock = new THREE.Clock();
-                // --- END: New mouse interaction logic ---
 
                 const animate = () => {
                     requestAnimationFrame(animate);
-
-                    // --- START: Updated animation loop ---
                     const elapsedTime = clock.getElapsedTime();
-
-                    // Base rotation
                     particlesMesh.rotation.y = elapsedTime * 0.05;
-
-                    // Mouse parallax effect with smooth interpolation (lerp)
-                    // This creates a gentle "look at" effect that feels fluid
                     const targetRotationX = mouseY * 0.3;
                     const targetRotationY = mouseX * 0.3;
-
                     particlesMesh.rotation.x += (targetRotationX - particlesMesh.rotation.x) * 0.05;
                     particlesMesh.rotation.y += (targetRotationY - particlesMesh.rotation.y) * 0.05;
-                    // --- END: Updated animation loop ---
-
                     renderer.render(scene, camera);
                 };
                 animate();
@@ -1265,27 +1390,36 @@
             },
 
             initEventListeners() {
-                // New Idea Form Submission
-                this.elements.ideaForm.addEventListener('submit', e => {
+                this.elements.ideaForm.addEventListener('submit', async e => {
                     e.preventDefault();
+                    if (!this.state.currentUser || this.state.currentUser.isAnonymous) {
+                        this.showToast('You must be logged in to submit an idea.', 'error');
+                        return;
+                    }
+
                     const newIdea = {
-                        id: `idea-${Date.now()}`,
-                        name: document.getElementById('studentName').value,
+                        authorName: document.getElementById('studentName').value,
                         title: document.getElementById('startupIdea').value,
                         problem: document.getElementById('problemStatement').value,
                         solution: document.getElementById('solution').value,
                         category: document.getElementById('category').value,
-                        likes: 0, commentsList: [], isLiked: false, timestamp: Date.now()
+                        authorId: this.state.currentUser.uid,
+                        authorEmail: this.state.currentUser.email,
+                        likedBy: [],
+                        comments: [],
+                        timestamp: serverTimestamp()
                     };
-                    if (!newIdea.name.trim() || !newIdea.title.trim()) return;
 
-                    this.ideas.unshift(newIdea);
-                    this.renderAllIdeas();
-                    this.elements.ideaForm.reset();
-                    this.showToast('Your idea has been launched!');
+                    try {
+                        await addDoc(ideasCollectionRef, newIdea);
+                        this.elements.ideaForm.reset();
+                        this.showToast('Your idea has been launched!', 'success');
+                    } catch (error) {
+                        console.error("Error adding document: ", error);
+                        this.showToast('Failed to submit idea. Please try again.', 'error');
+                    }
                 });
 
-                // Filtering and Sorting for Ideas
                 this.elements.filterGroup.addEventListener('click', e => {
                     if (e.target.tagName === 'BUTTON') {
                         this.elements.filterGroup.querySelector('.active').classList.remove('active');
@@ -1300,21 +1434,17 @@
                     this.renderAllIdeas();
                 });
 
-                // Event Delegation for Cards (Likes & Opening Modal)
                 this.elements.ideasGrid.addEventListener('click', e => {
                     const card = e.target.closest('.idea-card');
                     if (!card) return;
+
                     const ideaId = card.dataset.id;
                     const idea = this.ideas.find(i => i.id === ideaId);
+                    if (!idea) return;
 
-                    // Handle Like
                     if (e.target.closest('.card-action-like')) {
-                        idea.isLiked = !idea.isLiked;
-                        idea.likes += idea.isLiked ? 1 : -1;
-                        this.renderAllIdeas();
+                        this.toggleLike(ideaId);
                     }
-
-                    // Handle Comment Modal Open
                     if (e.target.closest('.card-action-comment')) {
                         this.openCommentModal(idea);
                     }
@@ -1338,41 +1468,49 @@
                     });
                 });
 
-                // Add event listeners for workshop buttons, replacing alert()
-                document.querySelectorAll('.workshop-card .btn').forEach(button => {
-                    button.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        const card = e.target.closest('.workshop-card');
-                        const workshopTitle = card.querySelector('.workshop-title').textContent;
-                        if (button.textContent.trim() === 'Register Now') {
-                            this.showToast(`Registered for "${workshopTitle}"! (Demo)`);
-                        } else {
-                            this.showToast(`Viewing recording for "${workshopTitle}"! (Demo)`);
-                        }
-                    });
-                });
-
                 // Comment Modal Events
                 this.elements.modalCloseBtn.addEventListener('click', () => this.closeCommentModal());
                 this.elements.commentModal.addEventListener('click', e => {
                     if (e.target === this.elements.commentModal) this.closeCommentModal();
                 });
-                this.elements.modalCommentForm.addEventListener('submit', e => {
+
+                this.elements.modalCommentForm.addEventListener('submit', async e => {
                     e.preventDefault();
+                    if (!this.state.currentUser || this.state.currentUser.isAnonymous) {
+                        this.showToast('Please log in to comment.', 'error');
+                        return;
+                    }
                     const input = e.target.querySelector('input');
                     const commentText = input.value.trim();
-                    const idea = this.ideas.find(i => i.id === this.state.activeModalIdeaId);
+                    const ideaId = this.state.activeModalIdeaId;
 
-                    if (commentText && idea) {
-                        idea.commentsList.push(commentText);
-                        this.updateModalComments(idea); // Update modal UI
-                        this.renderAllIdeas(); // Re-render grid to update comment count
-                        input.value = '';
+                    if (commentText && ideaId) {
+                        const ideaRef = doc(db, `/artifacts/${appId}/public/data/ideas`, ideaId);
+                        const newComment = {
+                            text: commentText,
+                            authorId: this.state.currentUser.uid,
+                            authorEmail: this.state.currentUser.email,
+                            timestamp: new Date()
+                        };
+                        try {
+                            await updateDoc(ideaRef, { comments: arrayUnion(newComment) });
+                            input.value = '';
+                        } catch (error) {
+                            console.error("Error adding comment: ", error);
+                            this.showToast('Failed to post comment.', 'error');
+                        }
                     }
                 });
 
-                // Auth Modal Events
-                this.elements.loginBtn.addEventListener('click', () => this.openAuthModal());
+                // Auth Events
+                this.elements.authBtn.addEventListener('click', () => {
+                    if (this.state.currentUser && !this.state.currentUser.isAnonymous) {
+                        signOut(auth).catch(error => console.error("Sign out error", error));
+                    } else {
+                        this.openAuthModal();
+                    }
+                });
+
                 this.elements.authModalCloseBtn.addEventListener('click', () => this.closeAuthModal());
                 this.elements.authModal.addEventListener('click', e => {
                     if(e.target === this.elements.authModal) this.closeAuthModal();
@@ -1389,48 +1527,92 @@
                     });
                 });
 
-                this.elements.loginForm.addEventListener('submit', e => {
+                this.elements.signupForm.addEventListener('submit', async e => {
                     e.preventDefault();
-                    this.showToast('Logged in successfully! (Demo)');
-                    this.closeAuthModal();
+                    const email = document.getElementById('signupEmail').value;
+                    const password = document.getElementById('signupPassword').value;
+                    try {
+                        await createUserWithEmailAndPassword(auth, email, password);
+                        this.showToast('Account created successfully!', 'success');
+                        this.closeAuthModal();
+                    } catch (error) {
+                        console.error("Signup error:", error);
+                        this.showToast(error.message, 'error');
+                    }
                 });
 
-                this.elements.signupForm.addEventListener('submit', e => {
+                this.elements.loginForm.addEventListener('submit', async e => {
                     e.preventDefault();
-                    this.showToast('Account created successfully! (Demo)');
-                    this.closeAuthModal();
+                    const email = document.getElementById('loginEmail').value;
+                    const password = document.getElementById('loginPassword').value;
+                    try {
+                        await signInWithEmailAndPassword(auth, email, password);
+                        this.showToast('Logged in successfully!', 'success');
+                        this.closeAuthModal();
+                    } catch (error) {
+                        console.error("Login error:", error);
+                        this.showToast(error.message, 'error');
+                    }
                 });
+            },
+
+            async toggleLike(ideaId) {
+                if (!this.state.currentUser || this.state.currentUser.isAnonymous) {
+                    this.showToast('Please log in to like ideas.', 'error');
+                    return;
+                }
+                const ideaRef = doc(db, `/artifacts/${appId}/public/data/ideas`, ideaId);
+                const idea = this.ideas.find(i => i.id === ideaId);
+                const userId = this.state.currentUser.uid;
+                const isLiked = idea.likedBy.includes(userId);
+
+                try {
+                    if (isLiked) {
+                        await updateDoc(ideaRef, { likedBy: arrayRemove(userId) });
+                    } else {
+                        await updateDoc(ideaRef, { likedBy: arrayUnion(userId) });
+                    }
+                } catch (error) {
+                    console.error("Error updating like:", error);
+                    this.showToast("Couldn't update like. Please try again.", 'error');
+                }
             },
 
             renderAllIdeas() {
                 let ideasToRender = [...this.ideas];
 
-                // 1. Filter
                 if (this.state.activeFilter !== 'All') {
                     ideasToRender = ideasToRender.filter(idea => idea.category === this.state.activeFilter);
                 }
 
-                // 2. Sort
                 ideasToRender.sort((a, b) => {
                     switch(this.state.activeSort) {
-                        case 'likes': return b.likes - a.likes;
-                        case 'comments': return b.commentsList.length - a.commentsList.length;
+                        case 'likes': return (b.likedBy?.length || 0) - (a.likedBy?.length || 0);
+                        case 'comments': return (b.comments?.length || 0) - (a.comments?.length || 0);
                         case 'latest':
-                        default: return b.timestamp - a.timestamp;
+                        default:
+                            const timeA = a.timestamp?.toDate ? a.timestamp.toDate().getTime() : 0;
+                            const timeB = b.timestamp?.toDate ? b.timestamp.toDate().getTime() : 0;
+                            return timeB - timeA;
                     }
                 });
 
-                // 3. Render
+                if (ideasToRender.length === 0) {
+                    this.elements.ideasGrid.innerHTML = `<p style="text-align:center; color: var(--text-secondary); grid-column: 1 / -1;">No ideas found. Be the first to post!</p>`;
+                    return;
+                }
+
                 this.elements.ideasGrid.innerHTML = ideasToRender.map(idea => this.createIdeaCardHTML(idea)).join('');
             },
 
             createIdeaCardHTML(idea) {
+                const isLiked = this.state.currentUser && idea.likedBy?.includes(this.state.currentUser.uid);
                 return `
                 <div class="idea-card" data-id="${idea.id}">
                     <div class="idea-card-header">
                         <div>
                             <h3>${idea.title}</h3>
-                            <p class="author">by ${idea.name}</p>
+                            <p class="author">by ${idea.authorName}</p>
                         </div>
                         <span class="idea-card-category">${idea.category}</span>
                     </div>
@@ -1438,11 +1620,11 @@
                         <p>${idea.problem}</p>
                     </div>
                     <div class="idea-card-footer">
-                        <button class="card-action card-action-like ${idea.isLiked ? 'liked' : ''}" aria-label="Like">
-                            <i class="fas fa-heart"></i> <span>${idea.likes}</span>
+                        <button class="card-action card-action-like ${isLiked ? 'liked' : ''}" aria-label="Like">
+                            <i class="fas fa-heart"></i> <span>${idea.likedBy?.length || 0}</span>
                         </button>
                         <button class="card-action card-action-comment" aria-label="Comment">
-                            <i class="fas fa-comment"></i> <span>${idea.commentsList.length}</span>
+                            <i class="fas fa-comment"></i> <span>${idea.comments?.length || 0}</span>
                         </button>
                     </div>
                 </div>
@@ -1470,14 +1652,25 @@
             },
 
             updateModalComments(idea) {
-                this.elements.modalCommentsList.innerHTML = idea.commentsList.length
-                    ? idea.commentsList.map(c => `<div class="comment-item">${c}</div>`).join('')
-                    : '<p class="text-secondary">No comments yet. Be the first to share your thoughts!</p>';
+                const sortedComments = (idea.comments || []).sort((a,b) => {
+                    const timeA = a.timestamp?.toDate ? a.timestamp.toDate().getTime() : 0;
+                    const timeB = b.timestamp?.toDate ? b.timestamp.toDate().getTime() : 0;
+                    return timeA - timeB; // Oldest first
+                });
+
+                this.elements.modalCommentsList.innerHTML = sortedComments.length
+                    ? sortedComments.map(c => `
+                        <div class="comment-item">
+                           <p class="comment-author">${c.authorEmail.split('@')[0]}</p>
+                           <p class="comment-text">${c.text}</p>
+                        </div>
+                    `).join('')
+                    : '<p class="text-secondary" style="text-align:center;">No comments yet. Be the first!</p>';
             },
 
-            showToast(message) {
+            showToast(message, type = 'default') {
                 const toast = document.createElement('div');
-                toast.className = 'toast';
+                toast.className = `toast ${type}`;
                 toast.textContent = message;
                 document.body.appendChild(toast);
 
@@ -1530,3 +1723,4 @@
 
 </body>
 </html>
+
